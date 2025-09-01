@@ -53,7 +53,9 @@ import p_img49 from "./p_img49.png";
 import p_img50 from "./p_img50.png";
 import p_img51 from "./p_img51.png";
 import p_img52 from "./p_img52.png";
-
+import air1 from "./air1.jpg";
+import n2 from "./n2.png";
+import n1 from "./n1.png";
 import logo from "./logo.png";
 import hero_img from "./hero_img.png";
 import cart_icon from "./cart_icon.png";
@@ -92,6 +94,9 @@ export const assets = {
   razorpay_logo,
   stripe_logo,
   cross_icon,
+  air1,
+  n1,
+  n2,
 };
 
 export const products = [
@@ -108,6 +113,7 @@ export const products = [
     date: 1716634345448,
     bestseller: true,
   },
+
   {
     _id: "aaaab",
     name: "Men Round Neck Pure Cotton T-shirt",

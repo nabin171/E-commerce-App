@@ -4,8 +4,6 @@ import Collection from "./pages/Collection";
 import Product from "./pages/Product";
 import Orders from "./pages/Orders";
 import Navbar from "./components/Navbar";
-
-// pages
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -15,7 +13,7 @@ import PlaceOrder from "./pages/PlaceOrder";
 
 const App = () => {
   return (
-    <div className="px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
+    <div>
       <Navbar></Navbar>
       <Routes>
         <Route path="/" element={<Home />} />
