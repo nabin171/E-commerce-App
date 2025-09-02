@@ -19,12 +19,14 @@ export default function Navbar() {
       style={{ backgroundColor: "#EAEAF3" }}
     >
       <div className="flex items-center  bg-[#EAEAF3]">
-        <h1
-          className="text-xl sm:text-2xl lg:text-3xl font-extrabold tasa-explorer
+        <Link to={"/"}>
+          <h1
+            className="text-xl sm:text-2xl lg:text-3xl font-extrabold tasa-explorer
                  text-gray-700"
-        >
-          MyBrand
-        </h1>
+          >
+            MyBrand
+          </h1>
+        </Link>
       </div>
 
       <ul className="hidden sm:flex sm:flex-col gap-2 lg:flex-row lg:gap-5 text-base lg:text-xl w-full lg:w-auto text-gray-700 bg-white rounded-3xl p-2 lg:p-4 justify-center">
