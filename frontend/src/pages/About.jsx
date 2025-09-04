@@ -1,18 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 const About = () => {
-  const [increment, setIncrement] = useState(0);
-  useEffect(() => {
-    console.log("count", increment);
-    console.log("hey");
-  }, [increment]);
-  return (
-    <div>
-      <button onClick={() => setIncrement(increment + 1)}>
-        Increment{increment}
-      </button>
-    </div>
-  );
+  return <div></div>;
 };
 
 export default About;

@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { assets } from "../assets/frontend_assets/assets";
 import { Link, NavLink } from "react-router-dom";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoIosArrowRoundBack } from "react-icons/io";
+import { ShopContext } from "../context/ShopContext";
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
+  const { setShowSearch } = useContext(ShopContext);
 
   return (
     <div className=" flex items-center justify-between py-5 font-medium">
@@ -31,7 +33,12 @@ const Navbar = () => {
         </NavLink>
       </ul>
       <div className="flex items-center gap-6">
-        <img src={assets.search_icon} className="w-5 cursor-pointer" alt="" />
+        <img
+          src={assets.search_icon}
+          className="w-5 cursor-pointer"
+          alt=""
+          onClick={() => setShowSearch(true)}
+        />
         <div className="group relative">
           <img
             className="w-5 cursor-pointer"
@@ -48,7 +55,7 @@ const Navbar = () => {
         </div>
         <Link to="/cart" className="relative">
           <img src={assets.cart_icon} className="w-5 min-w-5" alt="" />
-          <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white text-[8px] aspect-square rounded-full">
+          <p className="absolute right-[-1px] bottom-[-8px] w-4 text-center leading-4 bg-black text-white text-[8px] aspect-square rounded-full">
             10
           </p>
         </Link>
@@ -73,14 +80,14 @@ const Navbar = () => {
             <p>Back</p>
           </div>
           <NavLink
-            onClick={() => setVisible(flase)}
+            onClick={() => setVisible(false)}
             className="py-2 pl-6 border"
             to="/"
           >
             HOME
           </NavLink>
           <NavLink
-            onClick={() => setVisible(flase)}
+            onClick={() => setVisible(false)}
             className="py-2 pl-6 border"
             to="/collection"
           >
@@ -88,14 +95,14 @@ const Navbar = () => {
           </NavLink>
 
           <NavLink
-            onClick={() => setVisible(flase)}
+            onClick={() => setVisible(false)}
             className="py-2 pl-6 border"
             to="/about"
           >
             ABOUT
           </NavLink>
           <NavLink
-            onClick={() => setVisible(flase)}
+            onClick={() => setVisible(false)}
             className="py-2 pl-6 border"
             to="/contact"
           >
