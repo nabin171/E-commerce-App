@@ -1,8 +1,7 @@
 import userModel from "../models/userModel.js";
-import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { json } from "express";
+import validator from "validator";
 
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET);
@@ -32,32 +31,27 @@ const loginUser = async (req, res) => {
 //Route for user registration
 const registerUser = async (req, res) => {
   try {
-    const { name, password, email } = req.body;
+    const { name, email, password } = req.body;
     //checking user already exists or not
     const exists = await userModel.findOne({ email });
     if (exists) {
       return res.json({ success: false, message: "User already exists" });
     }
+
     //validating email format and strong password
-
     if (!validator.isEmail(email)) {
-      return res.json({
-        success: false,
-        message: "Please enter a valid email",
-      });
+      return res.status(400).json({ message: "Invalid email address" });
     }
-
     if (password.length < 8) {
-      return res.json({
-        success: false,
-        message: "Please enter a strong password",
-      });
+      return res.status(400).json({ message: "Invalid email address" });
     }
-    //hashing user password
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    const newUser = new userModel({
+    // Hash the password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
+    // 10 = salt rounds (higher = more secure but slower)
+
+    //  Save new user
+    const newUser = await userModel.create({
       name,
       email,
       password: hashedPassword,

@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -14,24 +14,24 @@ const productSchema = new mongoose.Schema({
   },
   image: {
     type: Array,
-    requird: true,
+    required: true,
   },
   category: {
     type: String,
     required: true,
   },
-  subcategory: {
+  subCategory: {
     type: String,
     required: true,
   },
-  size: {
+  sizes: {
     type: Array,
     required: true,
   },
-  bestSeller: {
+  bestseller: {
     type: Boolean,
   },
-  Date: { type: Number, required: true },
+  date: { type: Number, required: true },
 });
 
 const productModel =
