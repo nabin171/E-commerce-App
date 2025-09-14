@@ -1,36 +1,35 @@
-"use client"
+"use client";
 
-
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Eye, EyeOff } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Eye, EyeOff } from "lucide-react";
 
 export function LoginForm() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     rememberMe: false,
-  })
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
 
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    console.log("Login attempt:", formData)
-    setIsLoading(false)
-  }
+    console.log("Login attempt:", formData);
+    setIsLoading(false);
+  };
 
-  const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -70,7 +69,11 @@ export function LoginForm() {
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
           >
-            {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            {showPassword ? (
+              <EyeOff className="h-5 w-5" />
+            ) : (
+              <Eye className="h-5 w-5" />
+            )}
           </button>
         </div>
       </div>
@@ -81,10 +84,15 @@ export function LoginForm() {
           <Checkbox
             id="remember"
             checked={formData.rememberMe}
-            onCheckedChange={(checked) => handleInputChange("rememberMe", checked as boolean)}
+            onCheckedChange={(checked) =>
+              handleInputChange("rememberMe", !!checked)
+            }
             className="border-gray-300 data-[state=checked]:bg-rose-600 data-[state=checked]:border-rose-600"
           />
-          <Label htmlFor="remember" className="text-sm text-gray-600 cursor-pointer">
+          <Label
+            htmlFor="remember"
+            className="text-sm text-gray-600 cursor-pointer"
+          >
             Remember me
           </Label>
         </div>
@@ -106,5 +114,5 @@ export function LoginForm() {
         )}
       </Button>
     </form>
-  )
+  );
 }

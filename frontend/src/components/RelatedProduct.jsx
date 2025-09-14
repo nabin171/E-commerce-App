@@ -3,7 +3,7 @@ import { ShopContext } from "../context/ShopContext";
 import { products } from "../assets/frontend_assets/assets";
 import Title from "./Title";
 import Product from "../pages/Product";
-import ProductItem from "./Productitem";
+import ProductItem from "./ProductItem";
 
 const RelatedProduct = ({ category, subCategory }) => {
   const { products } = useContext(ShopContext);

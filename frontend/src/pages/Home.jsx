@@ -6,13 +6,13 @@ import React, {
   useSyncExternalStore,
 } from "react";
 import Hero from "../components/Hero";
-import LatestCollection from "../components/latestCollection";
+import LatestCollection from "../components/LatestCollection";
 import BestSeller from "../components/BestSeller";
 import OurPolicy from "../components/OurPolicy";
 import NewsletterBox from "../components/NewsletterBox";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { ShopContext } from "../context/ShopContext";
-import ProductItem from "../components/Productitem";
+import ProductItem from "../components/ProductItem";
 import Title from "../components/Title";
 const Home = () => {
   const { products } = useContext(ShopContext);
