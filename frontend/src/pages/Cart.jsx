@@ -6,8 +6,8 @@ import { assets } from "../assets/frontend_assets/assets";
 import CartTotal from "../components/CartTotal";
 import { useNavigate } from "react-router-dom";
 const Cart = () => {
-  const navigation = useNavigate();
-  const { products, currency, cartItems, updateQuantity, navigate } =
+  const navigate = useNavigate();
+  const { products, currency, cartItems, updateQuantity } =
     useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
 
@@ -90,7 +90,7 @@ const Cart = () => {
           <CartTotal />
           <div className="w-full text-end">
             <button
-              onClick={() => navigation("/place-order")}
+              onClick={() => navigate("/place-order")}
               className="bg-black text-white text-sm my-8 px-8 py-3 "
             >
               PROCEED TO CHECKOUT

@@ -73,6 +73,8 @@ import about_img from "./about_img.png";
 import contact_img from "./contact_img.png";
 import razorpay_logo from "./razorpay_logo.png";
 import stripe_logo from "./stripe_logo.png";
+import esewa_logo from "./esewa_logo.png";
+import khalti from "./khalti.png";
 import cross_icon from "./cross_icon.png";
 
 export const assets = {
@@ -94,6 +96,8 @@ export const assets = {
   razorpay_logo,
   stripe_logo,
   cross_icon,
+  esewa_logo,
+  khalti,
   air1,
   n1,
   n2,
