@@ -1,9 +1,10 @@
 // backend/middleware/multer.js
 import multer from "multer";
 
-const upload = multer({
-  storage: multer.memoryStorage(), // ✅ keep files in RAM (no local writes)
-  limits: { fileSize: 20 * 1024 * 1024 }, // optional: 20MB per file
+const storage = multer.diskStorage({
+  filename: function (req, file, callback) {
+    callback(null, file.originalname);
+  },
 });
-
+const upload = multer({ storage });
 export default upload;
