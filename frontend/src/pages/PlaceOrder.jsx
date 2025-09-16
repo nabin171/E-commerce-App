@@ -82,6 +82,21 @@ const PlaceOrder = () => {
           }
           break;
 
+        case "stripe":
+          const responseStripe = await axios.post(
+            backendUrl + "/api/order/stripe",
+            orderData,
+            { headers: { token } }
+          );
+          if (responseStripe.data.success) {
+            const { session_url } = responseStripe.data;
+            window.location.replace(session_url);
+          } else {
+            toast.error(responseStripe.data.message);
+          }
+
+          break;
+
         default:
           break;
       }
@@ -211,12 +226,12 @@ const PlaceOrder = () => {
               <img className="h-15 mx-4 " src={assets.esewa_logo}></img>
             </div>
             <div
-              onClick={() => setMethod("khalti")}
+              onClick={() => setMethod("stripe")}
               className="flex items-center gap-3 border p-2 px-3 cursor-pointer "
             >
               <p
                 className={`min-w-3.5 h-3.5 border rounded-full ${
-                  method === "khalti" ? "bg-green-400" : ""
+                  method === "stripe" ? "bg-green-400" : ""
                 }`}
               ></p>
               <img className="h-15 mx-4 " src={assets.stripe_logo}></img>
@@ -240,7 +255,7 @@ const PlaceOrder = () => {
           <div className="w-full text-end mt-8 ">
             <button
               type="submit"
-              className="bg-black text-white px-16 py-3 text-sm "
+              className="bg-black text-white px-16 py-3 text-sm cursor-pointer"
             >
               PLACE ORDER
             </button>

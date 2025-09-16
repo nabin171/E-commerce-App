@@ -8,7 +8,9 @@ import {
   allOrders,
   userOrders,
   updateStatus,
+  verifyStripe,
 } from "../controllers/orderController.js";
+import { verify } from "jsonwebtoken";
 const orderRouter = express.Router();
 
 //Admin Features
@@ -23,5 +25,8 @@ orderRouter.post("/esewa", authUser, placeOrderEsewa);
 
 //USwe feature
 orderRouter.post("/userorders", authUser, userOrders);
+
+//vaerify Payemnt
+orderRouter.post("/verifyStripe", authUser, verifyStripe);
 
 export default orderRouter;
