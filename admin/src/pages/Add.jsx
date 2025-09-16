@@ -5,11 +5,107 @@ import { Upload, Package, Tag, DollarSign } from "lucide-react";
 import { assets } from "../assets/admin_assets/assets";
 import { toast } from "react-toastify";
 
+const TARGET_WIDTH = 390;
+const TARGET_HEIGHT = 450;
+
+// Helper: resize + center-crop to exact dimensions, return a Blob
+async function resizeFileToBlob(
+  file,
+  width = TARGET_WIDTH,
+  height = TARGET_HEIGHT,
+  quality = 0.85
+) {
+  if (!file) return null;
+
+  // Reject SVGs (canvas drawing from SVG may produce issues); you can add SVG handling separately if needed
+  if (file.type === "image/svg+xml") {
+    // fallback: return original file (server should handle)
+    return file;
+  }
+
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+
+    // To avoid tainted canvas for remote sources, we use dataURL from the file, so crossOrigin not required
+    const reader = new FileReader();
+
+    reader.onerror = (e) => reject(e);
+    reader.onload = () => {
+      img.onload = () => {
+        try {
+          const srcW = img.width;
+          const srcH = img.height;
+          const srcRatio = srcW / srcH;
+          const dstRatio = width / height;
+
+          let sx = 0,
+            sy = 0,
+            sWidth = srcW,
+            sHeight = srcH;
+
+          if (srcRatio > dstRatio) {
+            // source is wider -> crop sides
+            sWidth = Math.round(srcH * dstRatio);
+            sx = Math.round((srcW - sWidth) / 2);
+          } else {
+            // source is taller -> crop top/bottom
+            sHeight = Math.round(srcW / dstRatio);
+            sy = Math.round((srcH - sHeight) / 2);
+          }
+
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+
+          // If original has transparency and we want to keep it, choose PNG. Otherwise choose JPEG.
+          const keepAlpha =
+            file.type === "image/png" || file.type === "image/webp";
+          const outType = keepAlpha ? "image/png" : "image/jpeg";
+
+          // draw cropped region to destination
+          ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, width, height);
+
+          // convert to blob
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) return reject(new Error("Canvas is empty"));
+              // Some browsers may generate type incorrectly; ensure blob.type is usable
+              if (
+                blob.type === "image/png" ||
+                blob.type === "image/jpeg" ||
+                blob.type === "image/webp"
+              ) {
+                resolve(blob);
+              } else {
+                // fallback to jpeg
+                canvas.toBlob((b2) => resolve(b2), "image/jpeg", quality);
+              }
+            },
+            outType,
+            quality
+          );
+        } catch (err) {
+          reject(err);
+        }
+      };
+
+      img.onerror = (e) => {
+        reject(e);
+      };
+
+      img.src = reader.result;
+    };
+
+    reader.readAsDataURL(file);
+  });
+}
+
 const Add = ({ token }) => {
-  const [image1, setImage1] = useState(false);
-  const [image2, setImage2] = useState(false);
-  const [image3, setImage3] = useState(false);
-  const [image4, setImage4] = useState(false);
+  // store 4 files (resized blobs) or null
+  const [images, setImages] = useState([null, null, null, null]);
+  // preview URLs for resized images
+  const [previews, setPreviews] = useState([null, null, null, null]);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -19,23 +115,55 @@ const Add = ({ token }) => {
   const [bestseller, setBestseller] = useState(false);
   const [sizes, setSizes] = useState([]);
 
-  // Keep track of any object URLs so we can revoke them and avoid memory leaks
+  // Keep track of object URLs so we can revoke them
   const objectUrlsRef = useRef([]);
 
-  const makePreviewUrl = (file) => {
-    if (!file) return null;
-    const url = URL.createObjectURL(file);
-    objectUrlsRef.current.push(url);
-    return url;
-  };
-
   useEffect(() => {
-    // Cleanup any created object URLs on unmount
     return () => {
+      // cleanup on unmount
       objectUrlsRef.current.forEach((u) => URL.revokeObjectURL(u));
       objectUrlsRef.current = [];
     };
   }, []);
+
+  // Generic handler for any of the 4 image inputs
+  const handleImageChange = (index) => async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      // Resize client-side (center-crop to 390x450)
+      const blob = await resizeFileToBlob(file);
+
+      // Create preview URL for resized blob
+      const url = URL.createObjectURL(blob);
+      objectUrlsRef.current.push(url);
+
+      setImages((prev) => {
+        const copy = [...prev];
+        copy[index] = blob;
+        return copy;
+      });
+      setPreviews((prev) => {
+        const copy = [...prev];
+        // revoke previous preview for this index if exists
+        if (copy[index]) {
+          try {
+            URL.revokeObjectURL(copy[index]);
+          } catch {}
+        }
+        copy[index] = url;
+        return copy;
+      });
+    } catch (err) {
+      console.error("Resize failed", err);
+      toast.error("Failed to process image. Please try a different file.");
+    }
+  };
+
+  const makePreviewOrDefault = (idx) => {
+    return previews[idx] || assets.upload_area;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,29 +178,30 @@ const Add = ({ token }) => {
       formData.append("bestseller", bestseller);
       formData.append("sizes", JSON.stringify(sizes));
 
-      image1 && formData.append("image1", image1);
-      image2 && formData.append("image2", image2);
-      image3 && formData.append("image3", image3);
-      image4 && formData.append("image4", image4);
-
-      // Kick off the request
-      const req = axios.post(backendUrl + "/api/product/add", formData, {
-        headers: { token },
-        timeout: 15000, // fail faster than hanging forever; tweak as you like
+      // append only if exists; give filenames
+      images.forEach((imgBlob, idx) => {
+        if (imgBlob) {
+          // prefer original extension if available; otherwise .jpg
+          const ext = imgBlob.type === "image/png" ? "png" : "jpg";
+          const filename = `image${idx + 1}-${Date.now()}.${ext}`;
+          formData.append(`image${idx + 1}`, imgBlob, filename);
+        }
       });
 
-      // Show immediate feedback while it’s uploading/processing
+      const req = axios.post(backendUrl + "/api/product/add", formData, {
+        headers: { token },
+        timeout: 20000,
+      });
+
       await toast.promise(req, {
         pending: "Adding product…",
         success: {
           render({ data }) {
-            // axios resolves with { data: ... }
             return data?.data?.message || "Product added successfully";
           },
         },
         error: {
           render({ data }) {
-            // data is the error object from axios
             return (
               data?.response?.data?.message ||
               data?.message ||
@@ -82,28 +211,39 @@ const Add = ({ token }) => {
         },
       });
 
-      // If we reach here, request succeeded. Read the resolved response:
       const response = await req;
-
       if (response.data?.success) {
-        // Reset fields exactly like your original code
+        // Reset everything
         setName("");
         setDescription("");
-        setImage1(false);
-        setImage2(false);
-        setImage3(false);
-        setImage4(false);
+        setImages([null, null, null, null]);
+        // revoke and clear previews
+        objectUrlsRef.current.forEach((u) => URL.revokeObjectURL(u));
+        objectUrlsRef.current = [];
+        setPreviews([null, null, null, null]);
         setPrice("");
-        // also clear sizes/bestseller if you want to, but keeping your original state
+        setSizes([]);
+        setBestseller(false);
       } else {
-        // In case backend returns success: false without throwing
         toast.error(response.data?.message || "Something went wrong");
       }
     } catch (error) {
-      console.log(error);
-      // toast.promise already showed an error toast, but keep this for parity with your original flow
+      console.error(error);
       if (error?.message) toast.error(error.message);
     }
+  };
+
+  // Reset button handler
+  const handleReset = () => {
+    setName("");
+    setDescription("");
+    setImages([null, null, null, null]);
+    objectUrlsRef.current.forEach((u) => URL.revokeObjectURL(u));
+    objectUrlsRef.current = [];
+    setPreviews([null, null, null, null]);
+    setPrice("");
+    setSizes([]);
+    setBestseller(false);
   };
 
   return (
@@ -132,112 +272,37 @@ const Add = ({ token }) => {
                 </p>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {/* Image 1 */}
-                <label
-                  htmlFor="image1"
-                  className="group cursor-pointer inline-block"
-                >
-                  <div className="relative">
-                    <img
-                      src={
-                        !image1 ? assets.upload_area : makePreviewUrl(image1)
-                      }
-                      loading="lazy"
-                      alt=""
-                    />
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md">
-                      1
+                {[0, 1, 2, 3].map((i) => (
+                  <label
+                    key={i}
+                    htmlFor={`image${i + 1}`}
+                    className="group cursor-pointer inline-block"
+                  >
+                    <div className="relative">
+                      <img
+                        src={makePreviewOrDefault(i)}
+                        loading="lazy"
+                        alt={`upload-${i + 1}`}
+                        className="w-full h-auto object-cover"
+                      />
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md">
+                        {i + 1}
+                      </div>
                     </div>
-                  </div>
-                  <input
-                    onChange={(e) => setImage1(e.target.files[0])}
-                    type="file"
-                    id="image1"
-                    accept="image/*"
-                    hidden
-                  />
-                </label>
-
-                <label
-                  htmlFor="image2"
-                  className="group cursor-pointer inline-block"
-                >
-                  <div className="relative">
-                    <img
-                      src={
-                        !image2 ? assets.upload_area : makePreviewUrl(image2)
-                      }
-                      loading="lazy"
-                      alt=""
+                    <input
+                      onChange={handleImageChange(i)}
+                      type="file"
+                      id={`image${i + 1}`}
+                      accept="image/*"
+                      hidden
                     />
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md">
-                      2
-                    </div>
-                  </div>
-                  <input
-                    onChange={(e) => setImage2(e.target.files[0])}
-                    type="file"
-                    id="image2"
-                    accept="image/*"
-                    hidden
-                  />
-                </label>
-
-                <label
-                  htmlFor="image3"
-                  className="group cursor-pointer inline-block"
-                >
-                  <div className="relative">
-                    <img
-                      src={
-                        !image3 ? assets.upload_area : makePreviewUrl(image3)
-                      }
-                      loading="lazy"
-                      alt=""
-                    />
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md">
-                      3
-                    </div>
-                  </div>
-                  <input
-                    onChange={(e) => setImage3(e.target.files[0])}
-                    type="file"
-                    id="image3"
-                    accept="image/*"
-                    hidden
-                  />
-                </label>
-
-                <label
-                  htmlFor="image4"
-                  className="group cursor-pointer inline-block"
-                >
-                  <div className="relative">
-                    <img
-                      src={
-                        !image4 ? assets.upload_area : makePreviewUrl(image4)
-                      }
-                      loading="lazy"
-                      alt=""
-                    />
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md">
-                      4
-                    </div>
-                  </div>
-                  <input
-                    onChange={(e) => setImage4(e.target.files[0])}
-                    type="file"
-                    id="image4"
-                    accept="image/*"
-                    hidden
-                  />
-                </label>
+                  </label>
+                ))}
               </div>
             </div>
 
-            {/* Product Details */}
+            {/* Product Details (kept same as your original form) */}
             <div className="grid md:grid-cols-2 gap-6">
-              {/* Product Name */}
               <div className="md:col-span-2">
                 <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-3">
                   <Tag className="w-4 h-4" />
@@ -253,7 +318,6 @@ const Add = ({ token }) => {
                 />
               </div>
 
-              {/* Product Description */}
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
                   Product Description
@@ -269,7 +333,6 @@ const Add = ({ token }) => {
                 />
               </div>
 
-              {/* Category */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
                   Product Category
@@ -284,7 +347,6 @@ const Add = ({ token }) => {
                 </select>
               </div>
 
-              {/* Sub Category */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
                   Sub Category
@@ -299,7 +361,6 @@ const Add = ({ token }) => {
                 </select>
               </div>
 
-              {/* Product Price */}
               <div>
                 <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-3">
                   <DollarSign className="w-4 h-4" />
@@ -322,115 +383,36 @@ const Add = ({ token }) => {
                 </div>
               </div>
 
-              {/* Sizes */}
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
                   Product Sizes
                 </label>
                 <div className="flex flex-wrap gap-3">
-                  <div
-                    onClick={() =>
-                      setSizes((prev) =>
-                        prev.includes("S")
-                          ? prev.filter((item) => item !== "S")
-                          : [...prev, "S"]
-                      )
-                    }
-                  >
-                    <p
-                      className={`${
-                        sizes.includes("S")
-                          ? "bg-blue-500 text-white border-blue-500"
-                          : "bg-gray-50 text-gray-600 border-gray-300"
-                      } cursor-pointer px-4 py-2 border-2 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 rounded-xl font-medium text-sm transition-all duration-200 hover:scale-105 select-none`}
+                  {["S", "M", "L", "XL", "XXL"].map((s) => (
+                    <div
+                      key={s}
+                      onClick={() =>
+                        setSizes((prev) =>
+                          prev.includes(s)
+                            ? prev.filter((item) => item !== s)
+                            : [...prev, s]
+                        )
+                      }
                     >
-                      S
-                    </p>
-                  </div>
-
-                  <div
-                    onClick={() =>
-                      setSizes((prev) =>
-                        prev.includes("M")
-                          ? prev.filter((item) => item !== "M")
-                          : [...prev, "M"]
-                      )
-                    }
-                  >
-                    <p
-                      className={`${
-                        sizes.includes("M")
-                          ? "bg-blue-500 text-white border-blue-500"
-                          : "bg-gray-50 text-gray-600 border-gray-300"
-                      } cursor-pointer px-4 py-2 border-2 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 rounded-xl font-medium text-sm transition-all duration-200 hover:scale-105 select-none`}
-                    >
-                      M
-                    </p>
-                  </div>
-
-                  <div
-                    onClick={() =>
-                      setSizes((prev) =>
-                        prev.includes("L")
-                          ? prev.filter((item) => item !== "L")
-                          : [...prev, "L"]
-                      )
-                    }
-                  >
-                    <p
-                      className={`${
-                        sizes.includes("L")
-                          ? "bg-blue-500 text-white border-blue-500"
-                          : "bg-gray-50 text-gray-600 border-gray-300"
-                      } cursor-pointer px-4 py-2 border-2 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 rounded-xl font-medium text-sm transition-all duration-200 hover:scale-105 select-none`}
-                    >
-                      L
-                    </p>
-                  </div>
-
-                  <div
-                    onClick={() =>
-                      setSizes((prev) =>
-                        prev.includes("XL")
-                          ? prev.filter((item) => item !== "XL")
-                          : [...prev, "XL"]
-                      )
-                    }
-                  >
-                    <p
-                      className={`${
-                        sizes.includes("XL")
-                          ? "bg-blue-500 text-white border-blue-500"
-                          : "bg-gray-50 text-gray-600 border-gray-300"
-                      } cursor-pointer px-4 py-2 border-2 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 rounded-xl font-medium text-sm transition-all duration-200 hover:scale-105 select-none`}
-                    >
-                      XL
-                    </p>
-                  </div>
-
-                  <div
-                    onClick={() =>
-                      setSizes((prev) =>
-                        prev.includes("XXL")
-                          ? prev.filter((item) => item !== "XXL")
-                          : [...prev, "XXL"]
-                      )
-                    }
-                  >
-                    <p
-                      className={`${
-                        sizes.includes("XXL")
-                          ? "bg-blue-500 text-white border-blue-500"
-                          : "bg-gray-50 text-gray-600 border-gray-300"
-                      } cursor-pointer px-4 py-2 border-2 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 rounded-xl font-medium text-sm transition-all duration-200 hover:scale-105 select-none`}
-                    >
-                      XXL
-                    </p>
-                  </div>
+                      <p
+                        className={`${
+                          sizes.includes(s)
+                            ? "bg-blue-500 text-white border-blue-500"
+                            : "bg-gray-50 text-gray-600 border-gray-300"
+                        } cursor-pointer px-4 py-2 border-2 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 rounded-xl font-medium text-sm transition-all duration-200 hover:scale-105 select-none`}
+                      >
+                        {s}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Bestseller Checkbox */}
               <div className="flex items-center gap-3">
                 <input
                   onChange={() => setBestseller((prev) => !prev)}
@@ -447,7 +429,6 @@ const Add = ({ token }) => {
                 </label>
               </div>
 
-              {/* Submit Button */}
               <div className="flex gap-4 pt-6 md:col-span-2">
                 <button
                   type="submit"
@@ -459,17 +440,7 @@ const Add = ({ token }) => {
                 <button
                   type="button"
                   className="cursor-pointer px-8 py-3 border-2 bg-gradient-to-r from-purple-600 to-blue-600 border-gray-300 text-white rounded-xl font-semibold hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
-                  onClick={() => {
-                    setName("");
-                    setDescription("");
-                    setImage1(false);
-                    setImage2(false);
-                    setImage3(false);
-                    setImage4(false);
-                    setPrice("");
-                    setSizes([]);
-                    setBestseller(false);
-                  }}
+                  onClick={handleReset}
                 >
                   Reset
                 </button>

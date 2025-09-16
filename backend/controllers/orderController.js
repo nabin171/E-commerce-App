@@ -1,6 +1,7 @@
 //Placing orders using COD Method
 import { response } from "express";
 import orderModel from "../models/orderModel.js";
+import userModel from "../models/userModel.js";
 const placeOrder = async (req, res) => {
   try {
     const { amount, userId, items, address } = req.body;

@@ -5,6 +5,8 @@ import { assets } from "../assets/frontend_assets/assets";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const PlaceOrder = () => {
   const {
@@ -68,18 +70,25 @@ const PlaceOrder = () => {
           const response = await axios.post(
             backendUrl + "/api/order/place",
             orderData,
-            { Headers: { token } }
+            { headers: { token } }
           );
+          console.log(response.data);
 
           if (response.data.success) {
-            setCartItems;
+            setCartItems({});
+            navigate("/orders");
+          } else {
+            toast.error(response.data.message);
           }
           break;
 
         default:
           break;
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -210,7 +219,7 @@ const PlaceOrder = () => {
                   method === "khalti" ? "bg-green-400" : ""
                 }`}
               ></p>
-              <img className="h-15 mx-4 " src={assets.khalti}></img>
+              <img className="h-15 mx-4 " src={assets.stripe_logo}></img>
             </div>
             <div
               onClick={() => setMethod("cod")}
