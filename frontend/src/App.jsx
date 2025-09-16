@@ -11,8 +11,11 @@ import Cart from "./pages/Cart";
 import Login from "./pages/Login";
 import PlaceOrder from "./pages/PlaceOrder";
 import Footer from "./components/Footer";
+
 import SearchBar from "./components/SearchBar";
 import { ToastContainer, toast } from "react-toastify";
+import { Frown } from "lucide-react";
+import Verify from "./pages/verify";
 
 const App = () => {
   return (
@@ -30,6 +33,7 @@ const App = () => {
         <Route path="login" element={<Login />} />
         <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/orders" element={<Orders />} />
+        <Route path="/verify" element={<Verify />} />
       </Routes>
       <Footer />
     </div>
