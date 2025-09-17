@@ -26,7 +26,7 @@ const SearchBar = () => {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        <img className="w-4" src={assets.search_icon}></img>
+        <img className="h-4 w-4" src={assets.search_icon}></img>
       </div>
       <img
         className="inline w-3 cursor-pointer"

@@ -1,5 +1,5 @@
 // Contact.jsx
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Mail,
   Phone,
@@ -11,9 +11,12 @@ import {
   Instagram,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import axios from "axios";
+import { ShopContext } from "../context/ShopContext";
 
-const Contact = ({ onSubmitContact }) => {
-  // simple local form state + validation
+const Contact = () => {
+  const { backendUrl } = useContext(ShopContext);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
@@ -27,8 +30,10 @@ const Contact = ({ onSubmitContact }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name.trim() || !email.trim() || !message.trim()) {
-      toast.error("Please fill name, email and message.");
+
+    // Basic validation
+    if (!name.trim() || !email.trim() || !subject.trim() || !message.trim()) {
+      toast.error("Please fill in all fields.");
       return;
     }
     if (!isEmail(email)) {
@@ -37,24 +42,23 @@ const Contact = ({ onSubmitContact }) => {
     }
 
     setLoading(true);
-    try {
-      // If you pass an onSubmitContact prop, call it
-      if (onSubmitContact) {
-        await onSubmitContact({ name, email, subject, message });
-      } else {
-        // fallback: simulate network
-        await new Promise((r) => setTimeout(r, 900));
-        toast.success("Message sent! We'll get back to you soon.");
-      }
 
-      // reset
+    try {
+      // Send form data to backend
+      const response = await axios.post(
+        backendUrl + "/api/contact", // your contact API route
+        { name, email, subject, message } // data to send
+      );
+      toast.success(response.data.message || "Message sent successfully!");
+
+      // Reset form
       setName("");
       setEmail("");
       setSubject("");
       setMessage("");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to send message. Try again later.");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to send message. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -82,6 +86,7 @@ const Contact = ({ onSubmitContact }) => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* LEFT: Contact Info */}
           <div className="lg:col-span-1 space-y-6">
+            {/* Contact Info */}
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-md border border-white/20">
               <h2 className="text-lg font-semibold mb-2">Get in touch</h2>
               <p className="text-sm text-gray-600 mb-4">
@@ -173,17 +178,6 @@ const Contact = ({ onSubmitContact }) => {
                 </a>
               </div>
             </div>
-
-            {/* Map (optional) */}
-            <div className="hidden lg:block bg-white/80 backdrop-blur-sm rounded-2xl p-0 overflow-hidden shadow-md border border-white/20 h-56">
-              {/* Replace src with your real embed if desired */}
-              <iframe
-                title="company-location"
-                src="https://maps.google.com/maps?q=Kathmandu&t=&z=13&ie=UTF8&iwloc=&output=embed"
-                className="w-full h-full border-0"
-                loading="lazy"
-              />
-            </div>
           </div>
 
           {/* RIGHT: Contact Form */}
@@ -240,6 +234,7 @@ const Contact = ({ onSubmitContact }) => {
                     type="text"
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
+                    required
                     placeholder="Order / Partnership / Other"
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
                   />
@@ -278,21 +273,6 @@ const Contact = ({ onSubmitContact }) => {
                   </p>
                 </div>
               </form>
-            </div>
-
-            {/* Small CTA / Additional info below form */}
-            <div className="mt-6 text-sm text-gray-600">
-              <p>
-                Prefer phone? Call us at{" "}
-                <a
-                  href="tel:+1234567890"
-                  className="text-blue-600 hover:underline font-medium"
-                >
-                  +1 (234) 567-890
-                </a>
-                . For partnership enquiries, please include company details and
-                a brief summary.
-              </p>
             </div>
           </div>
         </div>
