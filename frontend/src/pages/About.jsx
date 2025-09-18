@@ -161,7 +161,7 @@ const About = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
               href="/contact"
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold shadow hover:shadow-xl transition transform hover:scale-[1.02]"
+              className="inline-flex items-center gap-3 bg-gradient-to-r bg-gray-900  text-white px-6 py-3 rounded-xl font-semibold shadow hover:shadow-xl transition transform hover:scale-[1.02]"
             >
               <Briefcase className="w-4 h-4" />
               Let's talk

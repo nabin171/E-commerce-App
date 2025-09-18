@@ -27,7 +27,9 @@ const NewsletterBox = () => {
         />
         <button
           type="submit"
-          className="bg-black text-white text-xs px-10 py-4 cursor-pointer"
+          // className="bg-gray-900  text-white text-xs px-10 py-4 cursor-pointer"
+
+          className="inline-flex items-center px-10 py-4 gap-3 bg-gradient-to-r bg-gray-900 cursor-pointer text-white   font-semibold shadow hover:shadow-xl hover:bg-blue-300 transition transform hover:scale-[1.02]"
         >
           SUBSCRIBE
         </button>

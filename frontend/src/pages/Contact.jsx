@@ -262,7 +262,7 @@ const Contact = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold shadow-md hover:shadow-xl transform hover:scale-[1.02] transition"
+                    className="inline-flex items-center gap-3 bg-gradient-to-r bg-gray-900  text-white px-6 py-3 rounded-xl font-semibold shadow hover:shadow-xl transition transform hover:scale-[1.02]"
                   >
                     <Send className="w-4 h-4" />
                     {loading ? "Sending..." : "Send message"}

@@ -6,11 +6,12 @@ import p_img1 from "../assets/frontend_assets/p_img1.png";
 import p_img2_1 from "../assets/frontend_assets/p_img2_1.png";
 import p_img3 from "../assets/frontend_assets/p_img3.png";
 import p_img4 from "../assets/frontend_assets/p_img4.png";
+import "./Hero.css"; // Importing the CSS file
 
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 
-const AnimatedHero = () => {
+const Hero = () => {
   const [animationKey, setAnimationKey] = useState(0);
 
   // Restart animation every 8 seconds
@@ -46,7 +47,7 @@ const AnimatedHero = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <NavLink to="/collection">
-              <button className="px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-medium pointer-cursor">
+              <button className="inline-flex items-center gap-3 bg-gradient-to-r bg-gray-900  text-white px-6 py-3 rounded-xl font-semibold shadow hover:shadow-xl hover:bg-blue-300 transition transform hover:scale-[1.02]">
                 Shop Collection
               </button>
             </NavLink>
@@ -158,114 +159,8 @@ const AnimatedHero = () => {
           </div>
         </div>
       </div>
-
-      {/* Custom CSS animations */}
-      <style jsx>{`
-        @keyframes moveToCenter {
-          0% {
-            transform: translate(0, 0) scale(1);
-            opacity: 1;
-          }
-          50% {
-            transform: translate(200px, 150px) scale(1.2);
-            opacity: 0.8;
-          }
-          100% {
-            transform: translate(400px, 200px) scale(0);
-            opacity: 0;
-          }
-        }
-
-        @keyframes moveToCenter2 {
-          0% {
-            transform: translate(0, 0) scale(1);
-            opacity: 1;
-          }
-          50% {
-            transform: translate(-150px, 100px) scale(1.2);
-            opacity: 0.8;
-          }
-          100% {
-            transform: translate(-300px, 150px) scale(0);
-            opacity: 0;
-          }
-        }
-
-        @keyframes moveToCenter3 {
-          0% {
-            transform: translate(0, 0) scale(1);
-            opacity: 1;
-          }
-          50% {
-            transform: translate(250px, -100px) scale(1.2);
-            opacity: 0.8;
-          }
-          100% {
-            transform: translate(400px, -150px) scale(0);
-            opacity: 0;
-          }
-        }
-
-        @keyframes moveToCenter4 {
-          0% {
-            transform: translate(0, 0) scale(1);
-            opacity: 1;
-          }
-          50% {
-            transform: translate(-200px, -80px) scale(1.2);
-            opacity: 0.8;
-          }
-          100% {
-            transform: translate(-350px, -120px) scale(0);
-            opacity: 0;
-          }
-        }
-
-        @keyframes fadeInScale {
-          0% {
-            transform: scale(0) rotate(-10deg);
-            opacity: 0;
-          }
-          50% {
-            transform: scale(1.1) rotate(2deg);
-            opacity: 0.8;
-          }
-          100% {
-            transform: scale(1) rotate(0deg);
-            opacity: 1;
-          }
-        }
-
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0px) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-20px) rotate(5deg);
-          }
-        }
-
-        @keyframes float-delayed {
-          0%,
-          100% {
-            transform: translateY(0px) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-15px) rotate(-3deg);
-          }
-        }
-
-        .animate-float {
-          animation: float 4s ease-in-out infinite;
-        }
-
-        .animate-float-delayed {
-          animation: float-delayed 5s ease-in-out infinite;
-        }
-      `}</style>
     </div>
   );
 };
 
-export default AnimatedHero;
+export default Hero;

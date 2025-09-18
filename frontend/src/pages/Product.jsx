@@ -88,7 +88,7 @@ const Product = () => {
               addToCart(productData._id, size);
               // toast.success(`${productData.name} added to cart!`);
             }}
-            className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700"
+            className="inline-flex items-center gap-3 bg-gradient-to-r bg-gray-900  text-white px-6 py-3 rounded-xl font-semibold shadow hover:shadow-xl transition transform hover:scale-[1.02]"
           >
             ADD TO CART
           </button>
