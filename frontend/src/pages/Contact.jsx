@@ -31,7 +31,6 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validation
     if (!name.trim() || !email.trim() || !subject.trim() || !message.trim()) {
       toast.error("Please fill in all fields.");
       return;
@@ -44,14 +43,14 @@ const Contact = () => {
     setLoading(true);
 
     try {
-      // Send form data to backend
-      const response = await axios.post(
-        backendUrl + "/api/contact", // your contact API route
-        { name, email, subject, message } // data to send
-      );
+      const response = await axios.post(backendUrl + "/api/contact", {
+        name,
+        email,
+        subject,
+        message,
+      });
       toast.success(response.data.message || "Message sent successfully!");
 
-      // Reset form
       setName("");
       setEmail("");
       setSubject("");
@@ -65,19 +64,19 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-12 px-4">
+    <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg">
+          <div className="w-20 h-20 bg-gray-800 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg">
             <MapPin className="w-8 h-8 text-white" />
           </div>
 
-          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-extrabold text-gray-800 mb-2">
             Contact Us
           </h1>
 
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-700 max-w-2xl mx-auto">
             Have a question, want to work together, or need help with an order?
             Send us a message and our team will respond within 24 hours.
           </p>
@@ -87,8 +86,10 @@ const Contact = () => {
           {/* LEFT: Contact Info */}
           <div className="lg:col-span-1 space-y-6">
             {/* Contact Info */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-md border border-white/20">
-              <h2 className="text-lg font-semibold mb-2">Get in touch</h2>
+            <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-200">
+              <h2 className="text-lg font-semibold mb-2 text-gray-800">
+                Get in touch
+              </h2>
               <p className="text-sm text-gray-600 mb-4">
                 We're here to help — email, call, or visit us at the address
                 below.
@@ -96,14 +97,14 @@ const Contact = () => {
 
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
-                  <div className="p-3 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50">
-                    <Phone className="w-5 h-5 text-blue-600" />
+                  <div className="p-3 rounded-lg bg-gray-200">
+                    <Phone className="w-5 h-5 text-gray-800" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium">Phone</p>
+                    <p className="text-sm font-medium text-gray-800">Phone</p>
                     <a
                       href="tel:+1234567890"
-                      className="text-sm text-gray-700 hover:text-blue-600"
+                      className="text-sm text-gray-700 hover:text-gray-900"
                     >
                       +1 (234) 567-890
                     </a>
@@ -111,14 +112,14 @@ const Contact = () => {
                 </li>
 
                 <li className="flex items-start gap-3">
-                  <div className="p-3 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50">
-                    <Mail className="w-5 h-5 text-blue-600" />
+                  <div className="p-3 rounded-lg bg-gray-200">
+                    <Mail className="w-5 h-5 text-gray-800" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium">Email</p>
+                    <p className="text-sm font-medium text-gray-800">Email</p>
                     <a
                       href="mailto:hello@yourdomain.com"
-                      className="text-sm text-gray-700 hover:text-blue-600"
+                      className="text-sm text-gray-700 hover:text-gray-900"
                     >
                       hello@yourdomain.com
                     </a>
@@ -126,11 +127,11 @@ const Contact = () => {
                 </li>
 
                 <li className="flex items-start gap-3">
-                  <div className="p-3 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50">
-                    <MapPin className="w-5 h-5 text-blue-600" />
+                  <div className="p-3 rounded-lg bg-gray-200">
+                    <MapPin className="w-5 h-5 text-gray-800" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium">Address</p>
+                    <p className="text-sm font-medium text-gray-800">Address</p>
                     <address className="not-italic text-sm text-gray-700">
                       123 Commerce St, Suite 400
                       <br />
@@ -140,11 +141,11 @@ const Contact = () => {
                 </li>
 
                 <li className="flex items-start gap-3">
-                  <div className="p-3 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50">
-                    <Clock className="w-5 h-5 text-blue-600" />
+                  <div className="p-3 rounded-lg bg-gray-200">
+                    <Clock className="w-5 h-5 text-gray-800" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium">Hours</p>
+                    <p className="text-sm font-medium text-gray-800">Hours</p>
                     <p className="text-sm text-gray-700">Mon–Fri: 9am — 6pm</p>
                   </div>
                 </li>
@@ -152,29 +153,31 @@ const Contact = () => {
             </div>
 
             {/* Social */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-md border border-white/20">
-              <h3 className="text-sm font-semibold mb-3">Follow us</h3>
+            <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-200">
+              <h3 className="text-sm font-semibold mb-3 text-gray-800">
+                Follow us
+              </h3>
               <div className="flex items-center gap-3">
                 <a
                   href="#"
-                  className="p-2 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 hover:scale-105 transition-transform"
+                  className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
                   aria-label="LinkedIn"
                 >
-                  <Linkedin className="w-5 h-5 text-blue-600" />
+                  <Linkedin className="w-5 h-5 text-gray-800" />
                 </a>
                 <a
                   href="#"
-                  className="p-2 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 hover:scale-105 transition-transform"
+                  className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
                   aria-label="Twitter"
                 >
-                  <Twitter className="w-5 h-5 text-blue-600" />
+                  <Twitter className="w-5 h-5 text-gray-800" />
                 </a>
                 <a
                   href="#"
-                  className="p-2 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 hover:scale-105 transition-transform"
+                  className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
                   aria-label="Instagram"
                 >
-                  <Instagram className="w-5 h-5 text-blue-600" />
+                  <Instagram className="w-5 h-5 text-gray-800" />
                 </a>
               </div>
             </div>
@@ -182,13 +185,13 @@ const Contact = () => {
 
           {/* RIGHT: Contact Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-white/20">
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label
                       htmlFor="name"
-                      className="block text-sm font-medium text-gray-700 mb-2"
+                      className="block text-sm font-medium text-gray-800 mb-2"
                     >
                       Your name
                     </label>
@@ -199,14 +202,14 @@ const Contact = () => {
                       onChange={(e) => setName(e.target.value)}
                       required
                       placeholder="Jane Doe"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gray-800 outline-none transition"
                     />
                   </div>
 
                   <div>
                     <label
                       htmlFor="email"
-                      className="block text-sm font-medium text-gray-700 mb-2"
+                      className="block text-sm font-medium text-gray-800 mb-2"
                     >
                       Email
                     </label>
@@ -217,7 +220,7 @@ const Contact = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       placeholder="you@company.com"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gray-800 outline-none transition"
                     />
                   </div>
                 </div>
@@ -225,7 +228,7 @@ const Contact = () => {
                 <div>
                   <label
                     htmlFor="subject"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-gray-800 mb-2"
                   >
                     Subject
                   </label>
@@ -236,14 +239,14 @@ const Contact = () => {
                     onChange={(e) => setSubject(e.target.value)}
                     required
                     placeholder="Order / Partnership / Other"
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gray-800 outline-none transition"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="message"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-gray-800 mb-2"
                   >
                     Message
                   </label>
@@ -254,7 +257,7 @@ const Contact = () => {
                     rows={6}
                     required
                     placeholder="Tell us how we can help..."
-                    className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition resize-none"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-gray-800 outline-none transition resize-none"
                   />
                 </div>
 
@@ -262,7 +265,7 @@ const Contact = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="inline-flex items-center gap-3 bg-gradient-to-r bg-gray-900  text-white px-6 py-3 rounded-xl font-semibold shadow hover:shadow-xl transition transform hover:scale-[1.02]"
+                    className="inline-flex items-center gap-3 bg-gray-800 text-white px-6 py-3 rounded-xl font-semibold shadow hover:bg-gray-700 transition transform hover:scale-[1.02]"
                   >
                     <Send className="w-4 h-4" />
                     {loading ? "Sending..." : "Send message"}

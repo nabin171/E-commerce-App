@@ -73,7 +73,7 @@ const Collection = () => {
   }, [sortType]);
 
   return (
-    <div className="flex flex-col sm:flex-row sm:justify-around gap-1 sm:gap-10 pt-10 border-t">
+    <div className="flex flex-col sm:flex-row sm:justify-around gap-1 sm:gap-10 py-10 px-10 border-t">
       {/*Filter Options */}
       <div className="min-w-60">
         <p

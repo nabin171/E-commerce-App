@@ -10,6 +10,7 @@ import "./Hero.css"; // Importing the CSS file
 
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import CustomButton from "./CustomButton";
 
 const Hero = () => {
   const [animationKey, setAnimationKey] = useState(0);
@@ -47,9 +48,7 @@ const Hero = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <NavLink to="/collection">
-              <button className="inline-flex items-center gap-3 bg-gradient-to-r bg-gray-900  text-white px-6 py-3 rounded-xl font-semibold shadow hover:shadow-xl hover:bg-blue-300 transition transform hover:scale-[1.02]">
-                Shop Collection
-              </button>
+              <CustomButton label="Shop Collection" />
             </NavLink>
             <NavLink to="/cart">
               <button className="px-8 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors pointer-cursor font-medium">

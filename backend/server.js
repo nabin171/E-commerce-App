@@ -8,6 +8,7 @@ import productRouter from "./routes/productRoute.js";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 import contactRouter from "./routes/contactRoute.js";
+import { googleLogin } from "./controllers/googleAuthController.js";
 
 const app = express();
 const port = process.env.PORT || 4000;

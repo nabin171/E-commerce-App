@@ -4,6 +4,7 @@ import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/frontend_assets/assets";
 import RelatedProduct from "../components/RelatedProduct";
 import { toast } from "react-toastify";
+import CustomButton from "../components/CustomButton";
 const Product = () => {
   const { productId } = useParams();
   const { products, currency, addToCart } = useContext(ShopContext);
@@ -24,7 +25,7 @@ const Product = () => {
   }, [productId, products]);
 
   return productData ? (
-    <div className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100">
+    <div className="border-t-2 pt-10 px-10 transition-opacity ease-in duration-500 opacity-100">
       {/*Product Data*/}
       <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row">
         {/* Product Images */}
@@ -70,7 +71,7 @@ const Product = () => {
                 <button
                   onClick={() => setSize(item)}
                   className={`border py-2 px-4 bg-gray-100 ${
-                    item === size ? "border-orange-500" : ""
+                    item === size ? "border-orange-300 border-2" : ""
                   }`}
                   key={index}
                 >
@@ -79,20 +80,14 @@ const Product = () => {
               ))}
             </div>
           </div>
-          <button
+
+          <CustomButton
+            label="ADD TO CART"
             onClick={() => {
-              // if (!size) {
-              //   toast.warning("⚠️ Please select a size before adding to cart!");
-              //   return;
-              // }
               addToCart(productData._id, size);
-              // toast.success(`${productData.name} added to cart!`);
             }}
-            className="inline-flex items-center gap-3 bg-gradient-to-r bg-gray-900  text-white px-6 py-3 rounded-xl font-semibold shadow hover:shadow-xl transition transform hover:scale-[1.02]"
-          >
-            ADD TO CART
-          </button>
-          <div>
+          />
+          <div className="pt-4">
             <p>100% Original Product</p>
             <p>Cash on delivery is available for Product</p>
             <p>Easy return and exchange policy within 7 days</p>

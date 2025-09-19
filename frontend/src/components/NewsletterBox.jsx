@@ -1,9 +1,11 @@
 import React from "react";
+import CustomButton from "./CustomButton";
 
 const NewsletterBox = () => {
   const onSubmitHandler = (event) => {
     event.preventDefault();
   };
+
   return (
     <div className="text-center p-4">
       <p className="text-2xl font-medium text-gray-800">
@@ -15,24 +17,21 @@ const NewsletterBox = () => {
         Diamond Turf 93. It features the iconic midfoot strap and modern
         game-breaking tech, like the Vapor Edge 360
       </p>
+
       <form
         onSubmit={onSubmitHandler}
-        className="w-full sm:w-1/2 flex items-center gap-3 mx-auto my-6 border pl-3"
+        className="w-full sm:w-1/2 flex mx-auto my-6 border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-gray-900"
       >
+        {/* Input */}
         <input
-          className="w-full sm:flex-1 outline-none"
+          className="flex-1 px-4 py-3 outline-none border-none"
           type="email"
           placeholder="Enter your Email"
           required
         />
-        <button
-          type="submit"
-          // className="bg-gray-900  text-white text-xs px-10 py-4 cursor-pointer"
 
-          className="inline-flex items-center px-10 py-4 gap-3 bg-gradient-to-r bg-gray-900 cursor-pointer text-white   font-semibold shadow hover:shadow-xl hover:bg-blue-300 transition transform hover:scale-[1.02]"
-        >
-          SUBSCRIBE
-        </button>
+        {/* Button */}
+        <CustomButton label="SUBSCRIBE" type="submit" />
       </form>
     </div>
   );

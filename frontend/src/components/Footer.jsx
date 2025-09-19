@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { Button } from "@heroui/react";
 
 const Footer = () => {
   return (
@@ -64,19 +65,6 @@ const Footer = () => {
           <p className="text-gray-400 mb-3">
             Stay updated with our latest offers.
           </p>
-          <form className="flex w-full max-w-md mx-auto shadow-lg">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-4 py-2 rounded-l-lg"
-            />
-            <button
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-2 rounded-r-lg transition-colors duration-200"
-            >
-              Subscribe
-            </button>
-          </form>
         </div>
       </div>
 

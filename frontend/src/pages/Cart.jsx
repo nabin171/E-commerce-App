@@ -5,6 +5,7 @@ import Title from "../components/Title";
 import { assets } from "../assets/frontend_assets/assets";
 import CartTotal from "../components/CartTotal";
 import { useNavigate } from "react-router-dom";
+import CustomButton from "../components/CustomButton";
 const Cart = () => {
   const navigate = useNavigate();
   const { products, currency, cartItems, updateQuantity } =
@@ -30,7 +31,7 @@ const Cart = () => {
   }, [cartItems, products]);
 
   return (
-    <div className="border-t pt-14 ">
+    <div className="border-t pt-14 px-10">
       <div className="text-2xl mb-3 ">
         <Title text1={"YOUR"} text2={"CART"} />
       </div>
@@ -87,16 +88,14 @@ const Cart = () => {
           );
         })}
       </div>
-      <div className="flex justify-end my-20">
+      <div className="flex justify-end my-20 ">
         <div className="w-full sm:w-[450px]">
           <CartTotal />
-          <div className="w-full text-end">
-            <button
+          <div className="w-full text-end py-5">
+            <CustomButton
               onClick={() => navigate("/place-order")}
-              className="inline-flex items-center gap-3 bg-gradient-to-r bg-gray-900  text-white px-6 py-3 rounded-xl font-semibold shadow hover:shadow-xl transition transform hover:scale-[1.02]"
-            >
-              PROCEED TO CHECKOUT
-            </button>
+              label="PROCEED TO CHECKOUT"
+            />
           </div>
         </div>
       </div>

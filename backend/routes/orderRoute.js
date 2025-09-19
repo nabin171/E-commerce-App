@@ -9,24 +9,27 @@ import {
   userOrders,
   updateStatus,
   verifyStripe,
+  verifyEsewa,
+  esewaFailure,
 } from "../controllers/orderController.js";
 
 const orderRouter = express.Router();
 
-//Admin Features
+// ================= ADMIN =================
 orderRouter.post("/list", adminAuth, allOrders);
-
 orderRouter.post("/status", adminAuth, updateStatus);
 
-//Payment features
-orderRouter.post("/place", authUser, placeOrder);
-orderRouter.post("/stripe", authUser, placeOrderStripe);
-orderRouter.post("/esewa", authUser, placeOrderEsewa);
+// ================= PLACE ORDERS =================
+orderRouter.post("/place", authUser, placeOrder); // COD
+orderRouter.post("/stripe", authUser, placeOrderStripe); // Stripe
+orderRouter.post("/esewa", authUser, placeOrderEsewa); // eSewa
 
-//USwe feature
+// ================= USER =================
 orderRouter.post("/userorders", authUser, userOrders);
 
-//vaerify Payemnt
-orderRouter.post("/verifyStripe", authUser, verifyStripe);
+// ================= VERIFY PAYMENTS =================
+orderRouter.post("/verifyStripe", authUser, verifyStripe); // Stripe
+orderRouter.get("/esewa-success", verifyEsewa); // eSewa success callback
+orderRouter.get("/esewa-failure", esewaFailure); // eSewa failure callback
 
 export default orderRouter;

@@ -162,7 +162,7 @@ const PlaceOrder = () => {
   return (
     <form
       onSubmit={onSubmitHandler}
-      className="flex flex-col sm:flex-row justify-between gap-4 pt-5 m:pt-14 min-h-[80vh] border-t"
+      className="flex flex-col sm:flex-row justify-between gap-4 px-10 pt-5 m:pt-14 min-h-[80vh] border-t"
     >
       {/* Left side: Delivery Information */}
       <div className="flex flex-col gap-4 w-full sm:max-w-[480px]">
@@ -317,7 +317,7 @@ const PlaceOrder = () => {
           <div className="w-full text-end mt-8">
             <button
               type="submit"
-              className="bg-black text-white px-16 py-3 text-sm cursor-pointer"
+              className="inline-flex items-center gap-3 bg-gradient-to-r bg-gray-900  text-slate-300  px-6 py-3 rounded-xl font-semibold shadow hover:shadow-xl transition transform hover:scale-[1.02] "
             >
               PLACE ORDER
             </button>

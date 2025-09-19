@@ -29,15 +29,15 @@ const Navbar = () => {
       initial={{ y: -100, opacity: 0 }} // slide down on load
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 1, ease: "easeOut" }}
-      className="bg-gradient-to-r bg-gray-900 shadow-lg sticky top-0 z-50 backdrop-blur-sm"
+      className=" bg-gray-900 shadow-lg sticky top-0 z-50 backdrop-blur-sm"
     >
       <div className="flex items-center justify-between py-5 px-4 font-medium max-w-7xl mx-auto">
         <Link
           to={"/"}
           className="transform hover:scale-105 transition-transform duration-200"
         >
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
-            FashionX
+          <h1 className="text-4xl md:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent drop-shadow-lg animate-text">
+            Fashion<span className="italic">X</span>
           </h1>
         </Link>
 

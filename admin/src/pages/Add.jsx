@@ -432,14 +432,14 @@ const Add = ({ token }) => {
               <div className="flex gap-4 pt-6 md:col-span-2">
                 <button
                   type="submit"
-                  className="cursor-pointer flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200"
+                  className="inline-flex items-center gap-3 bg-gradient-to-r bg-gray-900  text-white px-6 py-3 rounded-xl font-semibold shadow hover:shadow-xl transition transform hover:scale-[1.02]"
                 >
                   Add Product
                 </button>
 
                 <button
                   type="button"
-                  className="cursor-pointer px-8 py-3 border-2 bg-gradient-to-r from-purple-600 to-blue-600 border-gray-300 text-white rounded-xl font-semibold hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+                  className="inline-flex items-center gap-3 bg-gradient-to-r bg-gray-900  text-white px-6 py-3 rounded-xl font-semibold shadow hover:shadow-xl transition transform hover:scale-[1.02]"
                   onClick={handleReset}
                 >
                   Reset
