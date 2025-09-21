@@ -1,15 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
+import currency from "../App";
 import { backendUrl } from "../App";
+import { toast } from "react-toastify";
 import { assets } from "../assets/admin_assets/assets";
-import { Package } from "lucide-react";
+import {
+  Package,
+  User,
+  MapPin,
+  Calendar,
+  CreditCard,
+  Truck,
+} from "lucide-react";
 
 const Orders = ({ token }) => {
   const [orders, setOrders] = useState([]);
 
   const fetchAllOrders = async () => {
-    if (!token) return null;
+    if (!token) {
+      return null;
+    }
     try {
       const response = await axios.post(
         backendUrl + "/api/order/list",
@@ -30,7 +42,10 @@ const Orders = ({ token }) => {
     try {
       const response = await axios.post(
         backendUrl + "/api/order/status",
-        { orderId, status: e.target.value },
+        {
+          orderId,
+          status: e.target.value,
+        },
         { headers: { token } }
       );
       if (response.data.success) {
@@ -64,103 +79,199 @@ const Orders = ({ token }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-3 sm:p-4 lg:p-6">
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="mb-4 sm:mb-6">
-          <h1 className="text-lg sm:text-xl font-bold text-gray-900 mb-1">
-            MY ORDERS
-          </h1>
+        <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-white/20 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-800 rounded-full flex items-center justify-center">
+                <Package className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gray-800 bg-clip-text text-transparent">
+                  Order Management
+                </h1>
+                <p className="text-gray-600 text-xs sm:text-sm">
+                  Manage all customer orders
+                </p>
+              </div>
+            </div>
+            <div className="bg-gray-800 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm font-semibold w-full sm:w-auto text-center">
+              Total Orders: <span className="font-bold">{orders.length}</span>
+            </div>
+          </div>
         </div>
 
         {/* Orders List */}
         {orders.length === 0 ? (
-          <div className="bg-white rounded-lg p-6 sm:p-8 text-center border">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-              <Package className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
+          <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-xl sm:rounded-2xl p-8 sm:p-12 text-center border border-white/20">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Package className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" />
             </div>
-            <p className="text-gray-500 text-sm sm:text-base font-medium">
+            <p className="text-gray-500 text-base sm:text-xl font-medium">
               No orders found
             </p>
-            <p className="text-gray-400 text-xs sm:text-sm mt-1">
-              Your orders will appear here
+            <p className="text-gray-400 text-sm sm:text-base mt-2">
+              Orders will appear here once customers start placing them
             </p>
           </div>
         ) : (
-          <div className="space-y-0 bg-white rounded-lg border overflow-hidden">
+          <div className="space-y-4 sm:space-y-6">
             {orders.map((order, index) => (
               <div
                 key={index}
-                className="border-b last:border-b-0 border-gray-200"
+                className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/20"
               >
-                {/* Each Order Row */}
-                <div className="py-3 sm:py-4 px-3 sm:px-4 flex flex-col sm:flex-row sm:items-center justify-between">
-                  {/* Product Info */}
-                  <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">
-                    <div className="w-12 h-12 bg-gray-100 rounded flex-shrink-0 overflow-hidden">
-                      <img
-                        src={assets.parcel_icon}
-                        alt="Product"
-                        className="w-full h-full object-cover"
-                      />
+                {/* Order Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-200">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={assets.parcel_icon}
+                      alt="Parcel Icon"
+                      className="w-8 h-8 sm:w-10 sm:h-10"
+                    />
+                    <div>
+                      <h4 className="text-lg sm:text-xl font-bold text-gray-900">
+                        Order #{index + 1}
+                      </h4>
+                      <p className="text-xs sm:text-sm text-gray-500">
+                        {new Date(order.date).toLocaleDateString()}
+                      </p>
                     </div>
+                  </div>
+                  <div
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
+                      order.status
+                    )}`}
+                  >
+                    {order.status}
+                  </div>
+                </div>
 
-                    <div className="flex-1 min-w-0 pt-1">
-                      <h3 className="text-sm font-medium text-gray-900 leading-tight mb-1">
-                        {order.items.length > 0
-                          ? order.items[0].name
-                          : "Order Items"}
-                      </h3>
-                      <div className="text-xs text-gray-600 leading-tight mb-1">
-                        <span>
-                          ${order.amount} Quantity:{" "}
-                          {order.items.reduce(
-                            (sum, item) => sum + item.quantity,
-                            0
-                          )}
-                        </span>
-                        {order.items.length > 0 && (
-                          <span> Size: {order.items[0].size}</span>
-                        )}
-                      </div>
-                      <div className="text-xs text-gray-500 leading-tight">
-                        <div>
-                          Date: {new Date(order.date).toLocaleDateString()}
+                {/* Mobile: Stacked Layout, Desktop: Grid Layout */}
+                <div className="space-y-4 lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0">
+                  {/* Items Section */}
+                  <div className="bg-gray-50 p-3 sm:p-4 rounded-lg sm:rounded-xl">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Package className="w-4 h-4 text-gray-600" />
+                      <h5 className="text-sm font-semibold text-gray-900">
+                        Items Ordered ({order.items.length})
+                      </h5>
+                    </div>
+                    <div className="space-y-1 sm:space-y-2 max-h-32 overflow-y-auto">
+                      {order.items.map((item, idx) => (
+                        <div
+                          key={idx}
+                          className="text-xs sm:text-sm text-gray-700 flex flex-wrap items-center gap-1"
+                        >
+                          <span className="font-medium">{item.name}</span>
+                          <span className="text-gray-500">
+                            ×{item.quantity}
+                          </span>
+                          <span className="text-gray-400 bg-gray-200 px-1.5 py-0.5 rounded text-xs">
+                            {item.size}
+                          </span>
                         </div>
-                        <div>Payment: {order.paymentMethod}</div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Customer Info */}
+                  <div className="bg-gray-50 p-3 sm:p-4 rounded-lg sm:rounded-xl">
+                    <div className="flex items-center gap-2 mb-3">
+                      <User className="w-4 h-4 text-gray-600" />
+                      <h5 className="text-sm font-semibold text-gray-900">
+                        Customer Info
+                      </h5>
+                    </div>
+                    <div className="space-y-1 sm:space-y-2">
+                      <p className="font-medium text-gray-900 text-sm">
+                        {order.address.firstName + " " + order.address.lastName}
+                      </p>
+                      <div className="text-xs sm:text-sm text-gray-600 space-y-0.5">
+                        <p className="flex items-start gap-1">
+                          <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                          <span>{order.address.street}</span>
+                        </p>
+                        <p className="text-xs text-gray-500 ml-4">
+                          {order.address.city}, {order.address.state},{" "}
+                          {order.address.country} {order.address.zipcode}
+                        </p>
+                        <p className="font-medium text-gray-700 mt-1">
+                          📞 {order.address.phone}
+                        </p>
                       </div>
                     </div>
                   </div>
 
-                  {/* Status */}
-                  <div className="flex-shrink-0 flex justify-start sm:justify-end mt-2 sm:mt-0">
-                    <div
-                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                        order.status
-                      )}`}
-                    >
-                      <div className="w-1.5 h-1.5 bg-current rounded-full mr-1"></div>
-                      {order.status}
+                  {/* Order Details */}
+                  <div className="bg-gray-50 p-3 sm:p-4 rounded-lg sm:rounded-xl">
+                    <div className="flex items-center gap-2 mb-3">
+                      <CreditCard className="w-4 h-4 text-gray-600" />
+                      <h5 className="text-sm font-semibold text-gray-900">
+                        Order Details
+                      </h5>
+                    </div>
+                    <div className="space-y-2 text-xs sm:text-sm">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Payment Method:</span>
+                        <span className="font-medium text-gray-900 bg-white px-2 py-0.5 rounded">
+                          {order.paymentMethod}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Payment Status:</span>
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                            order.payment
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {order.payment ? "✓ Paid" : "⏳ Pending"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Order Date:</span>
+                        <span className="font-medium text-gray-900">
+                          {new Date(order.date).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Status Update Dropdown */}
-                <div className="px-3 sm:px-4 pb-3 border-t border-gray-100 bg-gray-50">
-                  <div className="flex items-center justify-between pt-3">
-                    <label className="text-xs font-medium text-gray-700">
+                {/* Bottom Section */}
+                <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-200">
+                  {/* Amount */}
+                  <div className="bg-gray-800 text-white px-4 py-3 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl font-bold text-lg sm:text-xl text-center">
+                    {currency.symbol || "$"}
+                    {order.amount}
+                  </div>
+
+                  {/* Status Select */}
+                  <div className="flex-1 sm:flex-initial sm:min-w-0 sm:w-64">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                      <Truck className="w-4 h-4" />
                       Update Status:
                     </label>
                     <select
                       onChange={(e) => statusHandler(e, order._id)}
                       value={order.status}
-                      className="text-xs px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                      className="w-full px-3 py-2 sm:px-4 sm:py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white font-medium text-sm transition-all duration-200 touch-manipulation"
                     >
-                      <option value="Order Placed">Order Placed</option>
-                      <option value="Packing">Packing</option>
-                      <option value="Shipped">Shipped</option>
-                      <option value="Out for delivery">Out for delivery</option>
-                      <option value="Delivered">Delivered</option>
+                      <option value="Order Placed">📋 Order Placed</option>
+                      <option value="Packing">📦 Packing</option>
+                      <option value="Shipped">🚛 Shipped</option>
+                      <option value="Out for delivery">
+                        🚚 Out for delivery
+                      </option>
+                      <option value="Delivered">✅ Delivered</option>
                     </select>
                   </div>
                 </div>
