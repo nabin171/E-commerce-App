@@ -11,10 +11,9 @@ import Cart from "./pages/Cart";
 import Login from "./pages/Login";
 import PlaceOrder from "./pages/PlaceOrder";
 import Footer from "./components/Footer";
-
+import Verify from "./pages/Verify";
 import SearchBar from "./components/SearchBar";
-import { ToastContainer, toast } from "react-toastify";
-import Verify from "./pages/verify";
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
   return (
