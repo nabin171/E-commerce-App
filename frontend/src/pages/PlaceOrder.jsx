@@ -6,6 +6,7 @@ import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/frontend_assets/assets";
+import CustomButton from "../components/CustomButton";
 
 const PlaceOrder = () => {
   const {
@@ -134,22 +135,6 @@ const PlaceOrder = () => {
           }
           break;
 
-        // ---------------- ESEWA ----------------
-        case "esewa":
-          const responseEsewa = await axios.post(
-            backendUrl + "/api/order/esewa",
-            orderData,
-            { headers: { token } }
-          );
-
-          if (responseEsewa.data.success) {
-            const { amt, oid } = responseEsewa.data;
-            payWithEsewa(amt, oid); // Submit POST form
-          } else {
-            toast.error(responseEsewa.data.message);
-          }
-          break;
-
         default:
           break;
       }
@@ -268,22 +253,6 @@ const PlaceOrder = () => {
 
           <div className="flex gap-3 flex-col lg:flex-row">
             <div
-              onClick={() => setMethod("esewa")}
-              className="flex items-center gap-3 border p-2 px-3 cursor-pointer"
-            >
-              <p
-                className={`min-w-3.5 h-3.5 border rounded-full ${
-                  method === "esewa" ? "bg-green-400" : ""
-                }`}
-              ></p>
-              <img
-                className="h-15 w-30 mx-4"
-                src={assets.esewa_logo}
-                alt="eSewa"
-              />
-            </div>
-
-            <div
               onClick={() => setMethod("stripe")}
               className="flex items-center gap-3 border p-2 px-3 cursor-pointer"
             >
@@ -314,13 +283,8 @@ const PlaceOrder = () => {
             </div>
           </div>
 
-          <div className="w-full text-end mt-8">
-            <button
-              type="submit"
-              className="inline-flex items-center gap-3 bg-gradient-to-r bg-gray-900  text-slate-300  px-6 py-3 rounded-xl font-semibold shadow hover:shadow-xl transition transform hover:scale-[1.02] "
-            >
-              PLACE ORDER
-            </button>
+          <div className="w-full text-end my-8">
+            <CustomButton label="PLACE ORDER" type="submit" />
           </div>
         </div>
       </div>

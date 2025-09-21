@@ -35,7 +35,7 @@ const Orders = () => {
     loadOrderData();
   }, [token]);
   return (
-    <div className="border-t pt-16 pb-25">
+    <div className="border-t p-10">
       <div className="text-2xl">
         <Title text1={"MY"} text2={"ORDERS"} />
       </div>

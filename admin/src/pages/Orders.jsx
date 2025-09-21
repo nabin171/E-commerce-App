@@ -1,19 +1,15 @@
-import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import currency from "../App";
-import { backendUrl } from "../App";
 import { toast } from "react-toastify";
+import { backendUrl } from "../App";
 import { assets } from "../assets/admin_assets/assets";
+import { Package } from "lucide-react";
 
 const Orders = ({ token }) => {
   const [orders, setOrders] = useState([]);
 
   const fetchAllOrders = async () => {
-    if (!token) {
-      return null;
-    }
+    if (!token) return null;
     try {
       const response = await axios.post(
         backendUrl + "/api/order/list",
@@ -29,186 +25,136 @@ const Orders = ({ token }) => {
       toast.error(error.message);
     }
   };
+
   const statusHandler = async (e, orderId) => {
     try {
-      const resposne = await axios.post(
+      const response = await axios.post(
         backendUrl + "/api/order/status",
-        {
-          orderId,
-          status: event.target.value,
-        },
+        { orderId, status: e.target.value },
         { headers: { token } }
       );
-      if (resposne.data.success) {
+      if (response.data.success) {
         await fetchAllOrders();
+        toast.success("Order status updated successfully!");
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error("Failed to update order status");
+    }
   };
 
   useEffect(() => {
     fetchAllOrders();
   }, [token]);
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Order Placed":
+        return "bg-blue-100 text-blue-800";
+      case "Packing":
+        return "bg-orange-100 text-orange-800";
+      case "Shipped":
+        return "bg-purple-100 text-purple-800";
+      case "Out for delivery":
+        return "bg-yellow-100 text-yellow-800";
+      case "Delivered":
+        return "bg-green-100 text-green-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br p-4 md:p-6 lg:p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-8 p-6 bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl border border-white border-opacity-20">
-          <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-black mb-4 sm:mb-0">
-            Order Management
-          </h3>
-          <div className="bg-white bg-opacity-20 px-4 py-2 rounded-full text-balck font-semibold">
-            Total Orders:{" "}
-            <span className="bg-white text-blue-600 px-3 py-1 rounded-full ml-2 font-bold">
-              {orders.length}
-            </span>
-          </div>
+        <div className="mb-4 sm:mb-6">
+          <h1 className="text-lg sm:text-xl font-bold text-gray-900 mb-1">
+            MY ORDERS
+          </h1>
         </div>
 
         {/* Orders List */}
         {orders.length === 0 ? (
-          <div className="text-center py-16 bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl">
-            <p className="text-white text-xl">No orders found</p>
+          <div className="bg-white rounded-lg p-6 sm:p-8 text-center border">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+              <Package className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
+            </div>
+            <p className="text-gray-500 text-sm sm:text-base font-medium">
+              No orders found
+            </p>
+            <p className="text-gray-400 text-xs sm:text-sm mt-1">
+              Your orders will appear here
+            </p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-0 bg-white rounded-lg border overflow-hidden">
             {orders.map((order, index) => (
               <div
                 key={index}
-                className="bg-white bg-opacity-95 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+                className="border-b last:border-b-0 border-gray-200"
               >
-                {/* Order Header */}
-                <div className="flex items-center gap-4 mb-6 pb-4 border-b-2 border-gray-200">
-                  <img
-                    src={assets.parcel_icon}
-                    alt="Parcel Icon"
-                    className="w-10 h-10"
-                  />
-                  <h4 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Order #{index + 1}
-                  </h4>
-                </div>
+                {/* Each Order Row */}
+                <div className="py-3 sm:py-4 px-3 sm:px-4 flex flex-col sm:flex-row sm:items-center justify-between">
+                  {/* Product Info */}
+                  <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">
+                    <div className="w-12 h-12 bg-gray-100 rounded flex-shrink-0 overflow-hidden">
+                      <img
+                        src={assets.parcel_icon}
+                        alt="Product"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* Items Section */}
-                  <div className="bg-gray-50 p-4 rounded-xl">
-                    <h5 className="text-white bg-gradient-to-r from-blue-600 to-purple-600 px-3 py-2 rounded-lg text-sm font-semibold mb-3">
-                      Items Ordered
-                    </h5>
-                    <div className="space-y-2">
-                      {order.items.map((item, idx) => {
-                        if (idx === order.items.length - 1) {
-                          return (
-                            <p key={idx} className="text-gray-700">
-                              <span className="font-semibold">{item.name}</span>
-                              <span className="text-blue-600 mx-2">
-                                x{item.quantity}
-                              </span>
-                              <span className="text-gray-500">
-                                ({item.size})
-                              </span>
-                            </p>
-                          );
-                        } else {
-                          return (
-                            <p key={idx} className="text-gray-700">
-                              <span className="font-semibold">{item.name}</span>
-                              <span className="text-blue-600 mx-2">
-                                x{item.quantity}
-                              </span>
-                              <span className="text-gray-500">
-                                ({item.size})
-                              </span>
-                              ,
-                            </p>
-                          );
-                        }
-                      })}
+                    <div className="flex-1 min-w-0 pt-1">
+                      <h3 className="text-sm font-medium text-gray-900 leading-tight mb-1">
+                        {order.items.length > 0
+                          ? order.items[0].name
+                          : "Order Items"}
+                      </h3>
+                      <div className="text-xs text-gray-600 leading-tight mb-1">
+                        <span>
+                          ${order.amount} Quantity:{" "}
+                          {order.items.reduce(
+                            (sum, item) => sum + item.quantity,
+                            0
+                          )}
+                        </span>
+                        {order.items.length > 0 && (
+                          <span> Size: {order.items[0].size}</span>
+                        )}
+                      </div>
+                      <div className="text-xs text-gray-500 leading-tight">
+                        <div>
+                          Date: {new Date(order.date).toLocaleDateString()}
+                        </div>
+                        <div>Payment: {order.paymentMethod}</div>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Customer Info */}
-                  <div className="bg-gray-50 p-4 rounded-xl">
-                    <h5 className="text-white bg-gradient-to-r from-blue-600 to-purple-600 px-3 py-2 rounded-lg text-sm font-semibold mb-3">
-                      Customer Info
-                    </h5>
-                    <div className="space-y-2">
-                      <p className="font-bold text-gray-900">
-                        {order.address.firstName + " " + order.address.lastName}
-                      </p>
-                      <p className="text-gray-600">{order.address.street}</p>
-                      <p className="text-gray-600">
-                        {order.address.city +
-                          ", " +
-                          order.address.state +
-                          ", " +
-                          order.address.country +
-                          ", " +
-                          order.address.zipcode}
-                      </p>
-                      <p className="text-blue-600 font-semibold">
-                        {order.address.phone}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Order Details */}
-                  <div className="bg-gray-50 p-4 rounded-xl">
-                    <h5 className="text-white bg-gradient-to-r from-blue-600 to-purple-600 px-3 py-2 rounded-lg text-sm font-semibold mb-3">
-                      Order Details
-                    </h5>
-                    <div className="space-y-3">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Items:</span>
-                        <span className="font-semibold">
-                          {order.items.length}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Method:</span>
-                        <span className="font-semibold">
-                          {order.paymentMethod}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Payment:</span>
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                            order.payment
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
-                          }`}
-                        >
-                          {order.payment ? "Done" : "Pending"}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Date:</span>
-                        <span className="font-semibold">
-                          {new Date(order.date).toLocaleDateString()}
-                        </span>
-                      </div>
+                  {/* Status */}
+                  <div className="flex-shrink-0 flex justify-start sm:justify-end mt-2 sm:mt-0">
+                    <div
+                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                        order.status
+                      )}`}
+                    >
+                      <div className="w-1.5 h-1.5 bg-current rounded-full mr-1"></div>
+                      {order.status}
                     </div>
                   </div>
                 </div>
 
-                {/* Bottom Section */}
-                <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-6 pt-6 border-t-2 border-gray-200">
-                  {/* Amount */}
-                  <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-bold text-lg">
-                    {currency.symbol || "$"}
-                    {order.amount}
-                  </div>
-
-                  {/* Status Select */}
-                  <div className="w-full md:w-auto">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Order Status:
+                {/* Status Update Dropdown */}
+                <div className="px-3 sm:px-4 pb-3 border-t border-gray-100 bg-gray-50">
+                  <div className="flex items-center justify-between pt-3">
+                    <label className="text-xs font-medium text-gray-700">
+                      Update Status:
                     </label>
                     <select
                       onChange={(e) => statusHandler(e, order._id)}
                       value={order.status}
-                      className="w-full md:w-auto px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white font-semibold"
+                      className="text-xs px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
                     >
                       <option value="Order Placed">Order Placed</option>
                       <option value="Packing">Packing</option>

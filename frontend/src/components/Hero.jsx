@@ -37,7 +37,7 @@ const Hero = () => {
         <div className="flex-1 max-w-xl mb-12 lg:mb-0">
           <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             Fashion That
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+            <span className="block text-transparent bg-clip-text  bg-gray-800">
               Moves You
             </span>
           </h1>

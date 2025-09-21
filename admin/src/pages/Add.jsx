@@ -247,31 +247,31 @@ const Add = ({ token }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-3 sm:p-4 lg:p-6">
       <div className="max-w-4xl mx-auto">
-        <div className="bg-white/80 backdrop-blur-sm shadow-2xl rounded-2xl p-8 border border-white/20">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center">
-              <Package className="w-8 h-8 text-white" />
+        <div className="bg-white/80 backdrop-blur-sm shadow-2xl rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border border-white/20">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r bg-gray-800 rounded-full mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+              <Package className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold bg-gray-800 bg-clip-text text-transparent mb-2">
               Add New Product
             </h1>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-600 text-xs sm:text-sm">
               Fill in the product details below
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
             {/* Image Upload Section */}
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Upload className="w-5 h-5 text-gray-600" />
-                <p className="text-lg font-semibold text-gray-800">
+              <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                <Upload className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+                <p className="text-base sm:text-lg font-semibold text-gray-800">
                   Upload Images
                 </p>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4 md:gap-4">
                 {[0, 1, 2, 3].map((i) => (
                   <label
                     key={i}
@@ -283,9 +283,9 @@ const Add = ({ token }) => {
                         src={makePreviewOrDefault(i)}
                         loading="lazy"
                         alt={`upload-${i + 1}`}
-                        className="w-full h-auto object-cover"
+                        className="w-full h-auto object-cover rounded-lg sm:rounded-xl"
                       />
-                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md">
+                      <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-5 h-5 sm:w-6 sm:h-6 bg-gray-800 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md">
                         {i + 1}
                       </div>
                     </div>
@@ -301,10 +301,10 @@ const Add = ({ token }) => {
               </div>
             </div>
 
-            {/* Product Details (kept same as your original form) */}
-            <div className="grid md:grid-cols-2 gap-6">
+            {/* Product Details */}
+            <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
               <div className="md:col-span-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-3">
+                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
                   <Tag className="w-4 h-4" />
                   Product Name
                 </label>
@@ -313,33 +313,32 @@ const Add = ({ token }) => {
                   value={name}
                   type="text"
                   placeholder="Enter product name"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 bg-gray-50 focus:bg-white hover:border-gray-300"
+                  className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 bg-gray-50 focus:bg-white hover:border-gray-300 text-sm sm:text-base"
                   required
                 />
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
                   Product Description
                 </label>
                 <textarea
                   onChange={(e) => setDescription(e.target.value)}
                   value={description}
                   placeholder="Write detailed product description here..."
-                  rows={4}
-                  type="text"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 bg-gray-50 focus:bg-white hover:border-gray-300 resize-none"
+                  rows={3}
+                  className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 bg-gray-50 focus:bg-white hover:border-gray-300 resize-none text-sm sm:text-base"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
                   Product Category
                 </label>
                 <select
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 bg-gray-50 focus:bg-white hover:border-gray-300"
+                  className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 bg-gray-50 focus:bg-white hover:border-gray-300 text-sm sm:text-base"
                 >
                   <option value="Men">Men</option>
                   <option value="Women">Women</option>
@@ -348,12 +347,12 @@ const Add = ({ token }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
                   Sub Category
                 </label>
                 <select
                   onChange={(e) => setSubCategory(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 bg-gray-50 focus:bg-white hover:border-gray-300"
+                  className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 bg-gray-50 focus:bg-white hover:border-gray-300 text-sm sm:text-base"
                 >
                   <option value="Topwear">Topwear</option>
                   <option value="Bottomwear">Bottomwear</option>
@@ -361,13 +360,13 @@ const Add = ({ token }) => {
                 </select>
               </div>
 
-              <div>
-                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-3">
+              <div className="md:col-span-2">
+                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
                   <DollarSign className="w-4 h-4" />
                   Product Price
                 </label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-semibold">
+                  <span className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-semibold text-sm sm:text-base">
                     $
                   </span>
                   <input
@@ -377,17 +376,17 @@ const Add = ({ token }) => {
                     placeholder="20"
                     step="1"
                     min="0"
-                    className="w-full pl-8 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 bg-gray-50 focus:bg-white hover:border-gray-300"
+                    className="w-full pl-6 sm:pl-8 pr-3 sm:pr-4 py-2 sm:py-3 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 bg-gray-50 focus:bg-white hover:border-gray-300 text-sm sm:text-base"
                     required
                   />
                 </div>
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
                   Product Sizes
                 </label>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2 sm:gap-3">
                   {["S", "M", "L", "XL", "XXL"].map((s) => (
                     <div
                       key={s}
@@ -404,7 +403,7 @@ const Add = ({ token }) => {
                           sizes.includes(s)
                             ? "bg-blue-500 text-white border-blue-500"
                             : "bg-gray-50 text-gray-600 border-gray-300"
-                        } cursor-pointer px-4 py-2 border-2 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 rounded-xl font-medium text-sm transition-all duration-200 hover:scale-105 select-none`}
+                        } cursor-pointer px-3 py-2 sm:px-4 sm:py-2 border-2 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 rounded-lg sm:rounded-xl font-medium text-xs sm:text-sm transition-all duration-200 hover:scale-105 select-none touch-manipulation`}
                       >
                         {s}
                       </p>
@@ -413,7 +412,7 @@ const Add = ({ token }) => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 md:col-span-2">
                 <input
                   onChange={() => setBestseller((prev) => !prev)}
                   checked={bestseller}
@@ -429,17 +428,17 @@ const Add = ({ token }) => {
                 </label>
               </div>
 
-              <div className="flex gap-4 pt-6 md:col-span-2">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 sm:pt-6 md:col-span-2">
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-3 bg-gradient-to-r bg-gray-900  text-white px-6 py-3 rounded-xl font-semibold shadow hover:shadow-xl transition transform hover:scale-[1.02]"
+                  className="flex-1 inline-flex items-center justify-center gap-2 sm:gap-3 bg-gray-800 text-slate-300 px-4 py-3 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl font-semibold shadow hover:bg-gray-700 transition transform hover:scale-[1.02] text-sm sm:text-base touch-manipulation"
                 >
                   Add Product
                 </button>
 
                 <button
                   type="button"
-                  className="inline-flex items-center gap-3 bg-gradient-to-r bg-gray-900  text-white px-6 py-3 rounded-xl font-semibold shadow hover:shadow-xl transition transform hover:scale-[1.02]"
+                  className="flex-1 inline-flex items-center justify-center gap-2 sm:gap-3 bg-gray-800 text-slate-300 px-4 py-3 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl font-semibold shadow hover:bg-gray-700 transition transform hover:scale-[1.02] text-sm sm:text-base touch-manipulation"
                   onClick={handleReset}
                 >
                   Reset

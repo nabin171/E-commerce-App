@@ -104,97 +104,6 @@ const verifyStripe = async (req, res) => {
   }
 };
 
-// ================= ESEWA =================
-const placeOrderEsewa = async (req, res) => {
-  try {
-    const { amount, userId, items, address } = req.body;
-    const { origin } = req.headers;
-
-    const orderData = {
-      userId,
-      items,
-      amount,
-      paymentMethod: "eSewa",
-      payment: false,
-      address,
-      date: Date.now(),
-    };
-
-    const newOrder = new orderModel(orderData);
-    await newOrder.save();
-
-    const amt = amount;
-    const oid = newOrder._id.toString();
-    const product_code = process.env.ESEWA_SANDBOX_CODE; // EPAYTEST
-    const su = `${process.env.BACKEND_URL}/api/order/esewa-success`;
-    const fu = `${process.env.BACKEND_URL}/api/order/esewa-failure`;
-
-    // HMAC signature
-    const secretKey = process.env.ESEWA_SECRET_KEY;
-    const signedFieldNames = "total_amount,transaction_uuid,product_code";
-    const signature = crypto
-      .createHmac("sha256", secretKey)
-      .update(`${amt}${oid}${product_code}`)
-      .digest("base64");
-
-    res.json({
-      success: true,
-      amt,
-      oid,
-      product_code,
-      signedFieldNames,
-      signature,
-      su,
-      fu,
-    });
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: error.message });
-  }
-};
-
-const verifyEsewa = async (req, res) => {
-  const { amt, oid, refId } = req.query;
-  try {
-    const verificationResponse = await axios.post(
-      "https://rc-epay.esewa.com.np/epay/transrec",
-      null,
-      {
-        params: {
-          amt,
-          rid: refId,
-          pid: oid,
-          scd: process.env.ESEWA_SANDBOX_CODE,
-        },
-      }
-    );
-
-    if (verificationResponse.data.includes("Success")) {
-      await orderModel.findByIdAndUpdate(oid, { payment: true });
-      return res.redirect(
-        `http://localhost:5173/verify?success=true&orderID=${oid}`
-      );
-    } else {
-      return res.redirect(
-        `http://localhost:5173/verify?success=false&orderID=${oid}`
-      );
-    }
-  } catch (error) {
-    console.log(error);
-    return res.redirect(
-      `http://localhost:5173/verify?success=false&orderID=${oid}`
-    );
-  }
-};
-
-const esewaFailure = async (req, res) => {
-  const { oid } = req.query;
-  await orderModel.findByIdAndDelete(oid);
-  return res.redirect(
-    `http://localhost:5173/verify?success=false&orderID=${oid}`
-  );
-};
-
 // ================= ADMIN & USER =================
 const allOrders = async (req, res) => {
   try {
@@ -232,9 +141,6 @@ export {
   placeOrder,
   placeOrderStripe,
   verifyStripe,
-  placeOrderEsewa,
-  verifyEsewa,
-  esewaFailure,
   allOrders,
   userOrders,
   updateStatus,

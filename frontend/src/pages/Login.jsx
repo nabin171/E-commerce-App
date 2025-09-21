@@ -57,42 +57,43 @@ const Login = () => {
   }, [token]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen  flex items-center justify-center p-6">
+      <div className="w-full max-w-lg bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Lock className="text-white text-3xl" />
+          <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
+            <Lock className="text-white w-10 h-10" />
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-3">
-            User Panel
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {currentState === "Login" ? "Welcome Back" : "Create Account"}
           </h1>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600">
             {currentState === "Login"
-              ? "Welcome back! Please sign in to continue"
-              : "Create your account to get started"}
+              ? "Sign in to access your account"
+              : "Join us today by filling the form below"}
           </p>
         </div>
 
         {/* Form */}
-        <form
-          onSubmit={onSubmitHandler}
-          className="bg-white rounded-3xl shadow-2xl p-8"
-        >
-          {/* Name Field */}
+        <form onSubmit={onSubmitHandler} className="space-y-6">
+          {/* Name Field (Only for Sign Up) */}
           {currentState === "Sign Up" && (
-            <div className="mb-6">
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-800 mb-2"
+              >
                 Full Name
               </label>
               <div className="relative">
                 <FaUser className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
+                  id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   type="text"
-                  placeholder="Enter your full name"
-                  className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-2xl text-base outline-none transition-all duration-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100"
+                  placeholder="Jane Doe"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gray-800 outline-none transition"
                   required
                 />
               </div>
@@ -100,42 +101,50 @@ const Login = () => {
           )}
 
           {/* Email Field */}
-          <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-700 mb-3">
-              Email Address
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-800 mb-2"
+            >
+              Email
             </label>
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
+                id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 type="email"
-                placeholder="Enter your email"
-                className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-2xl text-base outline-none transition-all duration-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100"
+                placeholder="you@company.com"
+                className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gray-800 outline-none transition"
                 required
               />
             </div>
           </div>
 
           {/* Password Field */}
-          <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-700 mb-3">
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-800 mb-2"
+            >
               Password
             </label>
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
+                id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
-                className="w-full pl-12 pr-12 py-4 border-2 border-gray-200 rounded-2xl text-base outline-none transition-all duration-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100"
+                className="w-full pl-12 pr-12 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gray-800 outline-none transition"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-800 transition"
               >
                 {showPassword ? (
                   <EyeOff className="w-5 h-5" />
@@ -146,25 +155,19 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Remember Me */}
+          {/* Remember Me (Only for Login) */}
           {currentState === "Login" && (
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center">
+            <div className="flex items-center justify-between text-sm">
+              <label className="flex items-center text-gray-600 cursor-pointer">
                 <input
                   type="checkbox"
-                  id="remember"
-                  className="w-5 h-5 mr-3 accent-purple-500 rounded"
+                  className="w-4 h-4 mr-2 accent-gray-800 rounded border-gray-300"
                 />
-                <label
-                  htmlFor="remember"
-                  className="text-gray-600 cursor-pointer"
-                >
-                  Remember me
-                </label>
-              </div>
+                Remember me
+              </label>
               <a
                 href="#"
-                className="text-purple-500 hover:text-purple-600 font-medium"
+                className="text-gray-700 hover:text-gray-900 font-medium transition-colors"
               >
                 Forgot password?
               </a>
@@ -174,7 +177,7 @@ const Login = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-gray-900 text-white px-6 py-3 rounded-2xl text-lg font-semibold shadow hover:shadow-xl hover:bg-blue-300 transition transform hover:scale-[1.02]"
+            className="inline-flex items-center justify-center w-full bg-gray-800 text-white px-6 py-3 rounded-xl font-semibold shadow hover:bg-gray-700 transition transform hover:scale-[1.02]"
           >
             {currentState === "Login" ? "Login" : "Create Account"}
           </button>
@@ -182,36 +185,41 @@ const Login = () => {
           {/* Divider */}
           <div className="flex items-center my-6">
             <div className="flex-1 h-px bg-gray-200"></div>
-            <span className="px-4 text-gray-400 text-sm">or</span>
+            <span className="px-4 text-gray-500 text-sm">or</span>
             <div className="flex-1 h-px bg-gray-200"></div>
           </div>
 
           {/* Google Login */}
-          <GoogleLogin
-            onSuccess={async (credentialResponse) => {
-              try {
-                const res = await axios.post(
-                  `${backendUrl}/api/user/googlelogin`,
-                  {
-                    token: credentialResponse.credential,
+          <div className="w-full">
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  const res = await axios.post(
+                    `${backendUrl}/api/user/googlelogin`,
+                    {
+                      token: credentialResponse.credential,
+                    }
+                  );
+                  if (res.data.success) {
+                    setToken(res.data.token);
+                    localStorage.setItem("token", res.data.token);
+                    toast.success("Logged in successfully");
+                    navigate("/");
                   }
-                );
-                if (res.data.success) {
-                  setToken(res.data.token);
-                  localStorage.setItem("token", res.data.token);
-                  toast.success("Logged in successfully");
-                  navigate("/");
+                } catch (err) {
+                  console.error(err);
+                  toast.error("Google login failed");
                 }
-              } catch (err) {
-                console.error(err);
-                toast.error("Google login failed");
-              }
-            }}
-            onError={() => toast.error("Google login failed")}
-          />
+              }}
+              onError={() => toast.error("Google login failed")}
+              theme="outline"
+              size="large"
+              width="100%"
+            />
+          </div>
 
           {/* Toggle Login / Sign Up */}
-          <div className="text-center mt-8">
+          <div className="text-center mt-6 text-sm">
             <span className="text-gray-600">
               {currentState === "Login"
                 ? "Don't have an account? "
@@ -222,7 +230,7 @@ const Login = () => {
               onClick={() =>
                 setCurrentState(currentState === "Login" ? "Sign Up" : "Login")
               }
-              className="text-purple-500 font-semibold hover:text-purple-600 bg-transparent border-none cursor-pointer transition-colors"
+              className="text-gray-900 font-semibold hover:underline"
             >
               {currentState === "Login" ? "Sign Up" : "Login"}
             </button>
