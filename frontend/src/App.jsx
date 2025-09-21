@@ -11,13 +11,14 @@ import Cart from "./pages/Cart";
 import Login from "./pages/Login";
 import PlaceOrder from "./pages/PlaceOrder";
 import Footer from "./components/Footer";
-import Verify from "./pages/Verify";
+
 import SearchBar from "./components/SearchBar";
 import { ToastContainer } from "react-toastify";
+import Verify from "./pages/Verify";
 
 const App = () => {
   return (
-    <div className="w-full">
+    <div className="w-full overflow-x-hidden">
       <ToastContainer />
       <Navbar />
       <SearchBar />
