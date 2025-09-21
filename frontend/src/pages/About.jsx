@@ -178,11 +178,13 @@ const About = () => {
             </a>
 
             <a
-              href="mailto:hello@yourdomain.com"
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=karki0008@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-3 border border-gray-400 px-6 py-3 rounded-xl text-gray-800 hover:bg-gray-100 transition"
             >
               <Mail className="w-4 h-4" />
-              hello@yourdomain.com
+              karki0008@gmail.com
             </a>
           </div>
         </section>

@@ -89,20 +89,25 @@ const Cart = () => {
         })}
       </div>
 
-      {cartData.length === 0 && (
-        <div className="flex flex-col items-center justify-center text-center text-gray-600 my-20 ">
-          <p className="pb-10">
-            {" "}
-            Your Cart is Empty. Please Add an item to proceed
-          </p>
-          <CustomButton
-            onClick={() => navigate("/collection")}
-            label="CONTINUE SHOPPING"
-          />
-        </div>
-      )}
-
-      <div className="flex justify-end my-20 ">
+      <div className="pb-50">
+        {cartData.length === 0 && (
+          <div className="flex flex-col items-center justify-center text-center text-gray-600 my-20 ">
+            <p className="pb-10">
+              {" "}
+              Your Cart is Empty. Please Add an item to proceed
+            </p>
+            <CustomButton
+              onClick={() => navigate("/collection")}
+              label="CONTINUE SHOPPING"
+            />
+          </div>
+        )}
+      </div>
+      <div
+        className={` justify-end my-20 ${
+          cartData.length === 0 ? "hidden" : "flex"
+        }`}
+      >
         <div className="w-full sm:w-[450px]">
           <CartTotal />
           <div className="w-full text-end py-5">

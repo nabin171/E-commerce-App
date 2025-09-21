@@ -3,35 +3,47 @@ import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import axios from "axios";
 import { backendUrl } from "../App";
 import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
-const Login = ({ setToken }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const AdminLogin = ({ setToken }) => {
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async (e) => {
-    try {
-      e.preventDefault();
-      const response = await axios.post(backendUrl + "/api/user/admin", {
-        email,
-        password,
-      });
-      if (response.data.success) {
-        setToken(response.data.token);
-      } else {
-        toast.error(response.data.message);
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      email: Yup.string()
+        .email("Invalid email address")
+        .required("Email is required"),
+      password: Yup.string().required("Password is required"),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post(backendUrl + "/api/user/admin", {
+          email: values.email,
+          password: values.password,
+        });
+        if (response.data.success) {
+          setToken(response.data.token);
+          toast.success("Logged in successfully!");
+        } else {
+          toast.error(response.data.message);
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
       }
-    } catch (error) {
-      console.log(error);
-      toast.error(error.message);
-    }
-  };
+    },
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
       <div className="bg-white/80 backdrop-blur-sm shadow-2xl rounded-2xl px-8 py-10 max-w-md w-full border border-white/20">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+          <div className="w-16 h-16 bg-gray-800 rounded-full mx-auto mb-4 flex items-center justify-center">
             <Lock className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
@@ -42,7 +54,8 @@ const Login = ({ setToken }) => {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={formik.handleSubmit} className="space-y-6">
+          {/* Email Field */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Email Address
@@ -50,16 +63,27 @@ const Login = ({ setToken }) => {
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
-                className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 bg-gray-50 focus:bg-white hover:border-gray-300"
+                name="email"
                 type="email"
                 placeholder="your@email.com"
-                required
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
+                className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all duration-200 bg-gray-50 focus:bg-white ${
+                  formik.touched.email && formik.errors.email
+                    ? "border-red-500"
+                    : "border-gray-200"
+                }`}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.email}
               />
+              {formik.touched.email && formik.errors.email ? (
+                <p className="text-red-500 text-xs mt-1">
+                  {formik.errors.email}
+                </p>
+              ) : null}
             </div>
           </div>
 
+          {/* Password Field */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Password
@@ -67,12 +91,17 @@ const Login = ({ setToken }) => {
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
-                className="w-full pl-12 pr-12 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 bg-gray-50 focus:bg-white hover:border-gray-300"
+                name="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                className={`w-full pl-12 pr-12 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all duration-200 bg-gray-50 focus:bg-white ${
+                  formik.touched.password && formik.errors.password
+                    ? "border-red-500"
+                    : "border-gray-200"
+                }`}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.password}
               />
               <button
                 type="button"
@@ -85,9 +114,15 @@ const Login = ({ setToken }) => {
                   <Eye className="w-5 h-5" />
                 )}
               </button>
+              {formik.touched.password && formik.errors.password ? (
+                <p className="text-red-500 text-xs mt-1">
+                  {formik.errors.password}
+                </p>
+              ) : null}
             </div>
           </div>
 
+          {/* Remember Me */}
           <div className="flex items-center justify-between text-sm">
             <label className="flex items-center space-x-2 cursor-pointer">
               <input
@@ -106,7 +141,7 @@ const Login = ({ setToken }) => {
 
           <button
             type="submit"
-            className="w-full  bg-gray-900  text-white px-6 py-3 rounded-2xl text-lg font-semibold shadow hover:shadow-xl hover:bg-blue-300 transition transform hover:scale-[1.02]"
+            className="w-full bg-gray-900 text-white px-6 py-3 rounded-2xl text-lg font-semibold shadow hover:shadow-xl hover:bg-blue-300 transition transform hover:scale-[1.02]"
           >
             Sign in
           </button>
@@ -128,4 +163,4 @@ const Login = ({ setToken }) => {
   );
 };
 
-export default Login;
+export default AdminLogin;

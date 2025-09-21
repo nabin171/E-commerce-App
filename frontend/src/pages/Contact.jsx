@@ -1,4 +1,3 @@
-// Contact.jsx
 import React, { useContext, useState } from "react";
 import {
   Mail,
@@ -13,55 +12,44 @@ import {
 import { toast } from "react-toastify";
 import axios from "axios";
 import { ShopContext } from "../context/ShopContext";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const Contact = () => {
   const { backendUrl } = useContext(ShopContext);
-
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [subject, setSubject] = useState("");
-  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const isEmail = (s) =>
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@(([^<>()[\]\\.,;:\s@"]+\.)+[^<>()[\]\\.,;:\s@"]{2,})$/i.test(
-      s
-    );
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!name.trim() || !email.trim() || !subject.trim() || !message.trim()) {
-      toast.error("Please fill in all fields.");
-      return;
-    }
-    if (!isEmail(email)) {
-      toast.error("Please enter a valid email address.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const response = await axios.post(backendUrl + "/api/contact", {
-        name,
-        email,
-        subject,
-        message,
-      });
-      toast.success(response.data.message || "Message sent successfully!");
-
-      setName("");
-      setEmail("");
-      setSubject("");
-      setMessage("");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to send message. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      subject: "",
+      message: "",
+    },
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .min(2, "Name must be at least 2 characters")
+        .required("Name is required"),
+      email: Yup.string()
+        .email("Invalid email address")
+        .required("Email is required"),
+      subject: Yup.string().required("Subject is required"),
+      message: Yup.string().required("Message is required"),
+    }),
+    onSubmit: async (values, { resetForm }) => {
+      setLoading(true);
+      try {
+        const response = await axios.post(backendUrl + "/api/contact", values);
+        toast.success(response.data.message || "Message sent successfully!");
+        resetForm();
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to send message. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    },
+  });
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
@@ -71,11 +59,9 @@ const Contact = () => {
           <div className="w-20 h-20 bg-gray-800 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg">
             <MapPin className="w-8 h-8 text-white" />
           </div>
-
           <h1 className="text-4xl font-extrabold text-gray-800 mb-2">
             Contact Us
           </h1>
-
           <p className="text-gray-700 max-w-2xl mx-auto">
             Have a question, want to work together, or need help with an order?
             Send us a message and our team will respond within 24 hours.
@@ -94,7 +80,6 @@ const Contact = () => {
                 We're here to help — email, call, or visit us at the address
                 below.
               </p>
-
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <div className="p-3 rounded-lg bg-gray-200">
@@ -110,7 +95,6 @@ const Contact = () => {
                     </a>
                   </div>
                 </li>
-
                 <li className="flex items-start gap-3">
                   <div className="p-3 rounded-lg bg-gray-200">
                     <Mail className="w-5 h-5 text-gray-800" />
@@ -118,14 +102,15 @@ const Contact = () => {
                   <div>
                     <p className="text-sm font-medium text-gray-800">Email</p>
                     <a
-                      href="mailto:hello@yourdomain.com"
+                      href="https://mail.google.com/mail/?view=cm&fs=1&to=karki0008@gmail.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="text-sm text-gray-700 hover:text-gray-900"
                     >
-                      hello@yourdomain.com
+                      karki0008@gmail.com
                     </a>
                   </div>
                 </li>
-
                 <li className="flex items-start gap-3">
                   <div className="p-3 rounded-lg bg-gray-200">
                     <MapPin className="w-5 h-5 text-gray-800" />
@@ -139,7 +124,6 @@ const Contact = () => {
                     </address>
                   </div>
                 </li>
-
                 <li className="flex items-start gap-3">
                   <div className="p-3 rounded-lg bg-gray-200">
                     <Clock className="w-5 h-5 text-gray-800" />
@@ -159,21 +143,27 @@ const Contact = () => {
               </h3>
               <div className="flex items-center gap-3">
                 <a
-                  href="#"
+                  href="https://www.linkedin.com/in/nabin-karki-22a872203/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
                   aria-label="LinkedIn"
                 >
                   <Linkedin className="w-5 h-5 text-gray-800" />
                 </a>
                 <a
-                  href="#"
+                  href="https://twitter.com/yourusername"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
                   aria-label="Twitter"
                 >
                   <Twitter className="w-5 h-5 text-gray-800" />
                 </a>
                 <a
-                  href="#"
+                  href="https://www.instagram.com/nabin_karki76/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
                   aria-label="Instagram"
                 >
@@ -186,79 +176,111 @@ const Contact = () => {
           {/* RIGHT: Contact Form */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={formik.handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Name */}
                   <div>
-                    <label
-                      htmlFor="name"
-                      className="block text-sm font-medium text-gray-800 mb-2"
-                    >
+                    <label className="block text-sm font-medium text-gray-800 mb-2">
                       Your name
                     </label>
                     <input
                       id="name"
+                      name="name"
                       type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
                       placeholder="Jane Doe"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gray-800 outline-none transition"
+                      value={formik.values.name}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-gray-800 outline-none transition ${
+                        formik.touched.name && formik.errors.name
+                          ? "border-red-500"
+                          : "border-gray-200"
+                      }`}
                     />
+                    {formik.touched.name && formik.errors.name && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {formik.errors.name}
+                      </p>
+                    )}
                   </div>
 
+                  {/* Email */}
                   <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-gray-800 mb-2"
-                    >
+                    <label className="block text-sm font-medium text-gray-800 mb-2">
                       Email
                     </label>
                     <input
                       id="email"
+                      name="email"
                       type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
                       placeholder="you@company.com"
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gray-800 outline-none transition"
+                      value={formik.values.email}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-gray-800 outline-none transition ${
+                        formik.touched.email && formik.errors.email
+                          ? "border-red-500"
+                          : "border-gray-200"
+                      }`}
                     />
+                    {formik.touched.email && formik.errors.email && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {formik.errors.email}
+                      </p>
+                    )}
                   </div>
                 </div>
 
+                {/* Subject */}
                 <div>
-                  <label
-                    htmlFor="subject"
-                    className="block text-sm font-medium text-gray-800 mb-2"
-                  >
+                  <label className="block text-sm font-medium text-gray-800 mb-2">
                     Subject
                   </label>
                   <input
                     id="subject"
+                    name="subject"
                     type="text"
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                    required
                     placeholder="Order / Partnership / Other"
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gray-800 outline-none transition"
+                    value={formik.values.subject}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-gray-800 outline-none transition ${
+                      formik.touched.subject && formik.errors.subject
+                        ? "border-red-500"
+                        : "border-gray-200"
+                    }`}
                   />
+                  {formik.touched.subject && formik.errors.subject && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {formik.errors.subject}
+                    </p>
+                  )}
                 </div>
 
+                {/* Message */}
                 <div>
-                  <label
-                    htmlFor="message"
-                    className="block text-sm font-medium text-gray-800 mb-2"
-                  >
+                  <label className="block text-sm font-medium text-gray-800 mb-2">
                     Message
                   </label>
                   <textarea
                     id="message"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
+                    name="message"
                     rows={6}
-                    required
                     placeholder="Tell us how we can help..."
-                    className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-gray-800 outline-none transition resize-none"
+                    value={formik.values.message}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className={`w-full px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-gray-800 outline-none transition resize-none ${
+                      formik.touched.message && formik.errors.message
+                        ? "border-red-500"
+                        : "border-gray-200"
+                    }`}
                   />
+                  {formik.touched.message && formik.errors.message && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {formik.errors.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-4">
