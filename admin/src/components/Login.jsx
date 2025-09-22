@@ -46,7 +46,7 @@ const AdminLogin = ({ setToken }) => {
           <div className="w-16 h-16 bg-gray-800 rounded-full mx-auto mb-4 flex items-center justify-center">
             <Lock className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+          <h1 className="text-3xl font-bold bg-gray-900 bg-clip-text text-transparent mb-2">
             Admin Panel
           </h1>
           <p className="text-gray-600 text-sm">
